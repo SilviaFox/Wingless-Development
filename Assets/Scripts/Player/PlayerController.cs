@@ -259,7 +259,7 @@ public class PlayerController : MonoBehaviour
         // Start Dash
         if (Input.GetButtonDown("Dash") && movement.x != 0 && (dashStage == 1 || dashStage == 2 || dashStage == 8) && Time.time >= nextDashTime)
         {
-            if (isGrounded)
+            if (isGrounded) // Initiate the dash if on the ground
             {
                 dashHasEnded = false;
                 // This will activate the Dash() function
@@ -272,14 +272,14 @@ public class PlayerController : MonoBehaviour
                 nextDashTime = Time.time + 1f / dashRate;
                 currentDashLength = Time.time + dashLength;
             }
-            // Allow for dash jumping
+            // Allow for dash jumping and play Dash sound
             if(dashStage == 1 && isGrounded)
             {
                 dashStage += 1;
                 allowDashSound = true;
             }
             else
-            dashStage = 0;
+                dashStage = 0;
         }
         // End Dash
         else if (isHurt)
