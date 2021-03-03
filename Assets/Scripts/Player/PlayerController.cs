@@ -5,9 +5,9 @@ public class PlayerController : MonoBehaviour
 {
     #region Variables
     // Define components
-    Animator playerAnimator;
     Rigidbody2D rb2d;
     SpriteRenderer playerSprite;
+    SpriteAnimator spriteAnimator;
     BoxCollider2D playerCollider;
     ObjectAudioManager playerAudioManager; // Audio Manager for playing local player sounds
     DeathScript deathScript; // When health is 0, trigger this script
@@ -130,8 +130,8 @@ public class PlayerController : MonoBehaviour
         playerCollider = GetComponent<BoxCollider2D>();
 
         // Visuals
-        playerAnimator = GetComponent<Animator>();
         playerSprite = GetComponent<SpriteRenderer>();
+        spriteAnimator = GetComponent<SpriteAnimator>();
         dashGhosts = GetComponent<Ghost>();
 
         // Ground Detection
@@ -226,24 +226,24 @@ public class PlayerController : MonoBehaviour
             movement.x = 0;
         
         if (!isGrounded && rb2d.velocity.y > 0)
-            ChangeAnimationState(PLAYER_JUMP);
+            spriteAnimator.ChangeAnimationState(PLAYER_JUMP);
         else if (!isGrounded && rb2d.velocity.y < 0)
-            ChangeAnimationState(PLAYER_FALL);
+            spriteAnimator.ChangeAnimationState(PLAYER_FALL);
 
         switch(movement.x)
         {
             case 0:
                 rb2d.sharedMaterial = idleMaterial; // Make sure the player doesn't slide when idle
                 if (!isShooting && !isAttacking && isGrounded)
-                    ChangeAnimationState(PLAYER_IDLE); // Play idle animation
+                    spriteAnimator.ChangeAnimationState(PLAYER_IDLE); // Play idle animation
                 else if (!isAttacking && isGrounded)
-                    ChangeAnimationState(PLAYER_IDLE_SHOOT); // Play idle shoot animation
+                    spriteAnimator.ChangeAnimationState(PLAYER_IDLE_SHOOT); // Play idle shoot animation
             break;
             default:
                 
                 rb2d.sharedMaterial = movingMaterial; // Remove friction from the player
                 if (!isAttacking && isGrounded)
-                    ChangeAnimationState(PLAYER_RUN); // Play run animation
+                    spriteAnimator.ChangeAnimationState(PLAYER_RUN); // Play run animation
                 
 
                 if (movement.x < 0)
@@ -409,7 +409,7 @@ public class PlayerController : MonoBehaviour
 
         rb2d.sharedMaterial = movingMaterial;
 
-        ChangeAnimationState(PLAYER_HURT);
+        spriteAnimator.ChangeAnimationState(PLAYER_HURT);
         playerAudioManager.Play("Hurt");
 
         if (playerSprite.flipX) // detect the direction the player is facing and change the hurt direction accordingly
@@ -428,7 +428,7 @@ public class PlayerController : MonoBehaviour
         attackDamage = currentAttackDamage; // Get damage
         isAttacking = true;
         StartCoroutine(Attacking(attackTime));
-        ChangeAnimationState(attackAnimation);
+        spriteAnimator.ChangeAnimationState(attackAnimation);
     }
 
     IEnumerator Attacking(float duration)
@@ -443,18 +443,6 @@ public class PlayerController : MonoBehaviour
         
         // End attack once while loop is finished
         isAttacking = false;
-    }
-
-    void ChangeAnimationState(string newState)
-    {
-
-        //stop the same animation from interrupting itself
-        if (currentState == newState) return;
-        // Play the animation
-        playerAnimator.Play(newState);
-
-        // Reassign the current state
-        currentState = newState;
     }
     
 
