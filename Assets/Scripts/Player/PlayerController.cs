@@ -95,6 +95,7 @@ public class PlayerController : MonoBehaviour
     // Attacking variables
     [Header("Attack Variables")]
     [SerializeField] BoxCollider2D attackCollider;
+    [SerializeField] float airReboundStrenth = 10f;
 
     [HideInInspector] public bool isAttacking = false;
     float attackEndTime;
@@ -102,9 +103,10 @@ public class PlayerController : MonoBehaviour
     Vector2 leftAttackColliderOffset;
     [HideInInspector] public Vector2 attackForce;
     [HideInInspector] public float attackDamage;
+    [HideInInspector] public bool attackingInAir = false;
+    [HideInInspector] public bool isRebounding;
 
     // Animation States
-    string currentState; // Current animation state
 
     // Standard States
     const string PLAYER_IDLE = "Player_Idle";
@@ -198,6 +200,8 @@ public class PlayerController : MonoBehaviour
     void OnLandEvent()
     {
         landed = true;
+        isRebounding = false;
+        isAttacking = false;
         Instantiate(landingParticles, new Vector3(transform.position.x, transform.position.y + landingParticleOffset), transform.rotation);
     }
 
@@ -225,9 +229,9 @@ public class PlayerController : MonoBehaviour
         else
             movement.x = 0;
         
-        if (!isGrounded && rb2d.velocity.y > 0)
+        if (!isGrounded && !isAttacking && rb2d.velocity.y > 0)
             spriteAnimator.ChangeAnimationState(PLAYER_JUMP);
-        else if (!isGrounded && rb2d.velocity.y < 0)
+        else if (!isGrounded && !isAttacking && rb2d.velocity.y < 0)
             spriteAnimator.ChangeAnimationState(PLAYER_FALL);
 
         switch(movement.x)
@@ -300,6 +304,7 @@ public class PlayerController : MonoBehaviour
         //
         if (Input.GetButtonDown("Jump") && (isGrounded || isOnWall))
         {
+            isAttacking = false;
             jumpRequest = true;
             dashStage *= 4;
             
@@ -435,14 +440,22 @@ public class PlayerController : MonoBehaviour
     {
         float normalizedTime = 0; // time since coroutine started
 
-        while (normalizedTime <= duration)
+        while (normalizedTime <= duration && isAttacking)
         {
             normalizedTime += Time.deltaTime / duration; // count up every loop (time.deltatime is the time between each frame)
+
             yield return null;
         }
         
         // End attack once while loop is finished
         isAttacking = false;
+    }
+
+    public void AirRebound()
+    {
+        isRebounding = true;
+        rb2d.velocity = new Vector2(rb2d.velocity.x,0);
+        rb2d.AddForce(new Vector2(0.0f, airReboundStrenth), ForceMode2D.Impulse);
     }
     
 

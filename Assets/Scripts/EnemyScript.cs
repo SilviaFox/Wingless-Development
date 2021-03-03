@@ -9,16 +9,15 @@ public class EnemyScript : MonoBehaviour
     float nextFireTime; // The active version of the above
 
     [HideInInspector] public float direction = 1; // -1 when left, 1 when right
+    float playerDirection = 0;
     [HideInInspector] public bool canSeePlayer = false; // true when player has been spotted
-
-    string currentState; // Current animation state
 
     [SerializeField] GameObject bullet;
 
-    Animator playerAnimator;
     Rigidbody2D rb2d;
     BulletCounter bulletCounter;
     SpriteRenderer spriteRenderer;
+    SpriteAnimator spriteAnimator;
     PlayerController playerController;
 
     const string TEST_OBJECT_IDLE = "Test_Object_Idle";
@@ -27,9 +26,9 @@ public class EnemyScript : MonoBehaviour
     private void Awake()
     {
         nextFireTime = timeUntilFire;
-        playerAnimator = GetComponent<Animator>();
         rb2d = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteAnimator = GetComponent<SpriteAnimator>();
         bulletCounter = GameObject.FindGameObjectWithTag("BulletManager").GetComponent<BulletCounter>();
         playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
     }
@@ -67,15 +66,29 @@ public class EnemyScript : MonoBehaviour
             bulletCounter.DecreaseBulletAmount(); // Decrease bullet counter
             
             TakeDamage(other.GetComponent<MoveBullet>().damage);
-            ChangeAnimationState(TEST_OBJECT_HURT);  // Play hurt animation
+            spriteAnimator.ChangeAnimationState(TEST_OBJECT_HURT);  // Play hurt animation
         }
         else if (other.CompareTag("PlayerMelee"))
         {
             // Take damage and add force
             TakeDamage(playerController.attackDamage);
-            rb2d.AddForce(playerController.attackForce + new Vector2(0.0f, -rb2d.velocity.y), ForceMode2D.Impulse);
+            
+            if (playerController.isFacingLeft)
+                playerDirection = -1;
+            else
+                playerDirection = 1;
 
-            ChangeAnimationState(TEST_OBJECT_HURT); // Play hurt animation
+            Vector2 force = new Vector2(playerController.attackForce.x * playerDirection, playerController.attackForce.y);
+            rb2d.AddForce(force + new Vector2(0.0f, -rb2d.velocity.y), ForceMode2D.Impulse);
+
+            if (!playerController.isGrounded)
+            {
+                playerController.isAttacking = false;
+                playerController.AirRebound();
+                // Call Air Rebound Function
+            }
+
+            spriteAnimator.ChangeAnimationState(TEST_OBJECT_HURT); // Play hurt animation
         }
 
         if (health <= 0) // if health is less than or equal to 0
@@ -93,18 +106,7 @@ public class EnemyScript : MonoBehaviour
 
     void ReturnToIdleAnimation() // Resets back to idle animation
     {
-        ChangeAnimationState(TEST_OBJECT_IDLE);
+        spriteAnimator.ChangeAnimationState(TEST_OBJECT_IDLE);
     }
 
-    void ChangeAnimationState(string newState) // Change Animation states
-    {
-
-        //stop the same animation from interrupting itself
-        if (currentState == newState) return;
-        // Play the animation
-        playerAnimator.Play(newState);
-
-        // Reassign the current state
-        currentState = newState;
-    }
 }

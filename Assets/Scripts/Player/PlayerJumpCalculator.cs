@@ -57,7 +57,7 @@ public class PlayerJumpCalculator : MonoBehaviour
             {
                 rb2d.gravityScale = jumpFallMultiplier;
             }
-            else if (rb2d.velocity.y > 0 && !Input.GetButton("Jump") && !playerController.isGrounded)
+            else if (!playerController.isRebounding && (rb2d.velocity.y > 0 && !Input.GetButton("Jump") && !playerController.isGrounded))
             {
                 rb2d.gravityScale = jumpReleaseMultiplier;
             }
