@@ -83,7 +83,6 @@ public class EnemyScript : MonoBehaviour
 
             if (!playerController.isGrounded)
             {
-                playerController.isAttacking = false;
                 playerController.AirRebound();
                 // Call Air Rebound Function
             }

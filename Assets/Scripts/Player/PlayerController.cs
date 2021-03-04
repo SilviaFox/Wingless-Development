@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour
     // Attacking variables
     [Header("Attack Variables")]
     [SerializeField] BoxCollider2D attackCollider;
-    [SerializeField] float airReboundStrenth = 10f;
+    [SerializeField] float airReboundStrength = 10f;
 
     [HideInInspector] public bool isAttacking = false;
     float attackEndTime;
@@ -200,7 +200,7 @@ public class PlayerController : MonoBehaviour
     void OnLandEvent()
     {
         landed = true;
-        isRebounding = false;
+        
         isAttacking = false;
         Instantiate(landingParticles, new Vector3(transform.position.x, transform.position.y + landingParticleOffset), transform.rotation);
     }
@@ -211,16 +211,6 @@ public class PlayerController : MonoBehaviour
         // Running
         //
         inputX = Input.GetAxisRaw("Horizontal");
-
-
-        if (!isAttacking)
-        {
-            attackCollider.enabled = false;
-        }
-        else
-        {
-            attackCollider.enabled = true;
-        }
 
         if (Time.time >= nextWallJumpTime)
         {  
@@ -257,6 +247,9 @@ public class PlayerController : MonoBehaviour
 
             break;
         }
+
+        if(rb2d.velocity.y < 0)
+            isRebounding = false;
 
         #region Dashing
         
@@ -382,7 +375,7 @@ public class PlayerController : MonoBehaviour
             currentGroundedForce += -rb2d.velocity.y;
 
         rb2d.velocity = new Vector2(0.0f, rb2d.velocity.y) + ((Vector2)angleObject.right * new Vector2(movement.x, 1)); // Move player if left or right is pressed
-        if (!Input.GetButton("Jump") && isGrounded)
+        if (!Input.GetButton("Jump") && isGrounded && !isRebounding)
             rb2d.velocity = new Vector2(rb2d.velocity.x, -currentGroundedForce); // apply downward force to stop player from flying off of slopes   
     }
 
@@ -453,9 +446,10 @@ public class PlayerController : MonoBehaviour
 
     public void AirRebound()
     {
+        isAttacking = false;
         isRebounding = true;
-        rb2d.velocity = new Vector2(rb2d.velocity.x,0);
-        rb2d.AddForce(new Vector2(0.0f, airReboundStrenth), ForceMode2D.Impulse);
+        rb2d.velocity = new Vector2(rb2d.velocity.x, 0.0f);
+        rb2d.AddForce(new Vector2(0.0f, airReboundStrength), ForceMode2D.Impulse);
     }
     
 

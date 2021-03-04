@@ -7696,7 +7696,7 @@ MonoBehaviour:
   groundedSkin: 0.1
   groundedMask:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 256
   isGrounded: 0
   isOnWall: 0
   dashRate: 5
@@ -7714,7 +7714,7 @@ MonoBehaviour:
   isShooting: 0
   isFacingLeft: 0
   attackCollider: {fileID: 1683152813}
-  airReboundStrenth: 25
+  airReboundStrength: 40
   isAttacking: 0
   attackForce: {x: 0, y: 0}
   attackDamage: 0

@@ -3,6 +3,7 @@
 public class BreakableObject : MonoBehaviour
 {
     [SerializeField] float health;
+    float playerDirection = 0;
 
     SpriteAnimator spriteAnimator;
     Rigidbody2D rb2d;
@@ -29,8 +30,22 @@ public class BreakableObject : MonoBehaviour
         }
         else if (other.CompareTag("PlayerMelee"))
         {
+            if (playerController.isFacingLeft)
+                playerDirection = -1;
+            else
+                playerDirection = 1;
+
             health -= 10; // if it is a bullet, remove health [FIX: ADD ATTACK SPECIFIC DAMAGE]
-            rb2d.AddForce(playerController.attackForce, ForceMode2D.Impulse);
+
+            Vector2 force = new Vector2(playerController.attackForce.x * playerDirection, playerController.attackForce.y);
+            rb2d.AddForce(force + new Vector2(0.0f, -rb2d.velocity.y), ForceMode2D.Impulse);
+
+            if (!playerController.isGrounded)
+            {
+                playerController.AirRebound();
+                // Call Air Rebound Function
+            }
+
             spriteAnimator.ChangeAnimationState(TEST_OBJECT_HURT);  // Play hurt animation
         }
 
