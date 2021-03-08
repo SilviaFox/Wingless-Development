@@ -11,5 +11,7 @@ public class Attacks
     public float attackRange = 1; // Attack range, default to 1
     public float attackDamage = 10; // Damage attack will deal
 
+    public bool groundedAttack;
+
     public Vector2 attackForce; // The force of the attack
 }

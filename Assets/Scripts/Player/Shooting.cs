@@ -27,6 +27,7 @@ public class Shooting : MonoBehaviour
     BulletCounter bulletCounter;
     ObjectAudioManager playerAudioManager; // Audio Manager for playing local player sounds
     PlayerController playerController; // For checking if the player is dead or alive
+    InputManager inputManager;
 
     private void Start()
     {
@@ -36,6 +37,8 @@ public class Shooting : MonoBehaviour
 
         bulletCounter = GameObject.FindGameObjectWithTag("BulletManager").GetComponent<BulletCounter>();
         playerAudioManager = GameObject.FindGameObjectWithTag("PlayerAudio").GetComponent<ObjectAudioManager>();
+
+        inputManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<InputManager>();
 
         // Get main particle system
         ParticleSystem chargeParticleSystem = chargeParticles.GetComponent<ParticleSystem>();
@@ -57,7 +60,7 @@ public class Shooting : MonoBehaviour
         }
 
         // Shoot when the button is pressed
-        if (ableToShoot && Input.GetButtonDown("Shoot"))
+        if (ableToShoot && inputManager.shootPressed)
         {
             playerController.isShooting = true; // Play Shooting animation
 
@@ -74,7 +77,7 @@ public class Shooting : MonoBehaviour
         
         // Charge if button is held
 
-        if (ableToShoot && Input.GetButton("Shoot"))
+        if (ableToShoot && inputManager.shootHeld)
         {
             chargeParticles.SetActive(true); // Activate the charging particles
             chargeParticleSystemMain.startColor = chargeParticleColors[currentChargeLevel]; // Change color of particles
@@ -94,7 +97,7 @@ public class Shooting : MonoBehaviour
         
 
         // Release a charged shot
-        if (ableToShoot && Input.GetButtonUp("Shoot")) // When the player presses the shoot button
+        if (ableToShoot && inputManager.shootReleased) // When the player presses the shoot button
         {
             chargeParticles.SetActive(false);
             
@@ -102,10 +105,10 @@ public class Shooting : MonoBehaviour
                 Shoot(currentChargeLevel);
             
         }
-        else if (Input.GetButtonUp("Shoot") && hasBeenDamaged)
+        else if (inputManager.shootReleased && hasBeenDamaged)
             hasBeenDamaged = false;
 
-        if (nextFireTime <= Time.time && !Input.GetButton("Shoot"))
+        if (nextFireTime <= Time.time && !inputManager.shootHeld)
         {
             playerController.isShooting = false;
             
@@ -113,7 +116,7 @@ public class Shooting : MonoBehaviour
 
         
 
-        if (Input.GetButtonUp("Shoot"))
+        if (inputManager.shootReleased)
             chargeParticles.SetActive(false);
 
     }

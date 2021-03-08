@@ -1289,6 +1289,7 @@ GameObject:
   - component: {fileID: 624396179}
   - component: {fileID: 624396180}
   - component: {fileID: 624396181}
+  - component: {fileID: 624396182}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: GameManager
@@ -1337,6 +1338,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 095240bec5227f54eb667dde443ef31f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &624396182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 624396178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9894e5e679b384148a61cb87f5978958, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameState: 1
+  inputX: 0
+  dashPressed: 0
+  dashReleased: 0
+  jumpPressed: 0
+  jumpHeld: 0
+  shootPressed: 0
+  shootHeld: 0
+  shootReleased: 0
+  attackPressed: 0
 --- !u!1 &695228893
 GameObject:
   m_ObjectHideFlags: 0
@@ -2686,6 +2709,18 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Hurt
     clip: {fileID: 8300000, guid: 4a17063400ea731499a9833aa3ab9577, type: 3}
+    volume: 0.5
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: Attack1
+    clip: {fileID: 8300000, guid: 3dffaa48b337586449bd19687f376c81, type: 3}
+    volume: 0.5
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: Hitsound
+    clip: {fileID: 8300000, guid: 9534f0ac38b8a96419827cd8b883ec6f, type: 3}
     volume: 0.5
     pitch: 1
     loop: 0
@@ -7689,6 +7724,7 @@ MonoBehaviour:
   wallJumpForce: 2.5
   groundedForce: 4.5
   slopeCounterForce: 1.5
+  maxDownwardVelocity: 15
   angleObject: {fileID: 1785574645}
   wallJumpMoveCooldown: 0.15
   idleMaterial: {fileID: 6200000, guid: 52114525979d61f4da9ec5f5b4e7889e, type: 2}
@@ -7779,7 +7815,7 @@ Transform:
   m_GameObject: {fileID: 1864223937}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 38.3, y: 13.7, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_Children:
   - {fileID: 1683152812}
   - {fileID: 1783020670}
@@ -7832,6 +7868,7 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 768
+  wallJumpParticles: {fileID: 0}
 --- !u!114 &1864223945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7930,12 +7967,14 @@ MonoBehaviour:
     endLag: 0.1
     attackRange: 1
     attackDamage: 20
+    groundedAttack: 1
     attackForce: {x: 5, y: 12}
   - animationName: Player_Attack_Air
-    animationTime: 0.6
+    animationTime: 0.65
     endLag: 0.1
     attackRange: 1
     attackDamage: 20
+    groundedAttack: 0
     attackForce: {x: 5, y: -10}
 --- !u!114 &1864223950
 MonoBehaviour:

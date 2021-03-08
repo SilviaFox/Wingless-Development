@@ -43,8 +43,6 @@ public class MoveBullet : MonoBehaviour
         if (direction == -1)
             bulletRenderer.flipX = true; // flip bullet sprite depending on direction
 
-        Debug.Log(direction);
-
 
     }
 

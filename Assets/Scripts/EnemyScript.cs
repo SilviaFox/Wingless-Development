@@ -19,6 +19,7 @@ public class EnemyScript : MonoBehaviour
     SpriteRenderer spriteRenderer;
     SpriteAnimator spriteAnimator;
     PlayerController playerController;
+    ObjectAudioManager playerAudioManager;
 
     const string TEST_OBJECT_IDLE = "Test_Object_Idle";
     const string TEST_OBJECT_HURT = "Test_Object_Hurt";
@@ -31,6 +32,7 @@ public class EnemyScript : MonoBehaviour
         spriteAnimator = GetComponent<SpriteAnimator>();
         bulletCounter = GameObject.FindGameObjectWithTag("BulletManager").GetComponent<BulletCounter>();
         playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        playerAudioManager = GameObject.FindGameObjectWithTag("PlayerAudio").GetComponent<ObjectAudioManager>();
     }
 
     private void Update()
@@ -101,6 +103,7 @@ public class EnemyScript : MonoBehaviour
     void TakeDamage(float damage)
     {
         health -= damage;
+        playerAudioManager.Play("Hitsound");
     }
 
     void ReturnToIdleAnimation() // Resets back to idle animation

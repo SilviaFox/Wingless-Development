@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     ObjectAudioManager playerAudioManager; // Audio Manager for playing local player sounds
     DeathScript deathScript; // When health is 0, trigger this script
     PlayerHealth playerHealth; // for getting the amount of health the player has
+    InputManager inputManager;
 
     //=================
     // Define Variables
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float wallJumpForce = 4f; // Force of a player's wall jump
     [SerializeField] float groundedForce = 5f; // Force applied constantly when on the ground to make sure the player stays on the ground
     [SerializeField] float slopeCounterForce = 2; // Applied multiple that is taken away from the current grounded force
+    [SerializeField] float maxDownwardVelocity = 5; // Maximum downward speed the player can travel in the air
 
     [SerializeField] Transform angleObject;
 
@@ -105,6 +107,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public float attackDamage;
     [HideInInspector] public bool attackingInAir = false;
     [HideInInspector] public bool isRebounding;
+    bool groundedAttack;
 
     // Animation States
 
@@ -145,6 +148,9 @@ public class PlayerController : MonoBehaviour
         playerAudioManager = GameObject.FindGameObjectWithTag("PlayerAudio").GetComponent<ObjectAudioManager>();
 
         // Gameplay
+
+        // Input
+        inputManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<InputManager>();
         
         // Health
         playerHealth = GameObject.FindGameObjectWithTag("PlayerHealth").GetComponent<PlayerHealth>();
@@ -170,7 +176,7 @@ public class PlayerController : MonoBehaviour
         else
             attackCollider.offset = attackColliderOffset;
 
-        if (!jumpRequest)
+        if (!jumpRequest && !isOnWall && !isRebounding)
         {
             // Check to see if player is grounded   
             isGrounded = Physics2D.OverlapBox(boxCenter + colliderOffset, boxSize, 0f, groundedMask) != null;
@@ -191,8 +197,10 @@ public class PlayerController : MonoBehaviour
         else if (!isGrounded)
         {
             landed = false;
-            
         }
+
+
+        CapDownwardVelocity();
 
         
     }
@@ -205,12 +213,20 @@ public class PlayerController : MonoBehaviour
         Instantiate(landingParticles, new Vector3(transform.position.x, transform.position.y + landingParticleOffset), transform.rotation);
     }
 
+    void CapDownwardVelocity()
+    {
+        if (!isGrounded && rb2d.velocity.y < -maxDownwardVelocity)
+        {
+            rb2d.velocity = new Vector2(rb2d.velocity.x, -maxDownwardVelocity);
+        }
+    }
+
     private void InputAndResponse() // all things to do with pressing buttons and making the player react are here
     {
         //
         // Running
         //
-        inputX = Input.GetAxisRaw("Horizontal");
+        inputX = inputManager.inputX;
 
         if (Time.time >= nextWallJumpTime)
         {  
@@ -254,7 +270,7 @@ public class PlayerController : MonoBehaviour
         #region Dashing
         
         // Start Dash
-        if (Input.GetButtonDown("Dash") && movement.x != 0 && (dashStage == 1 || dashStage == 2 || dashStage == 8) && Time.time >= nextDashTime)
+        if (inputManager.dashPressed && movement.x != 0 && (dashStage == 1 || dashStage == 2 || dashStage == 8) && Time.time >= nextDashTime)
         {
             if (isGrounded) // Initiate the dash if on the ground
             {
@@ -283,7 +299,7 @@ public class PlayerController : MonoBehaviour
         {
             EndDash();
         }
-        else if (isGrounded && (Input.GetButtonUp("Dash") || Time.time >= currentDashLength || dashStage == 0 || movement.x == 0))
+        else if (isGrounded && (inputManager.dashReleased || Time.time >= currentDashLength || dashStage == 0 || movement.x == 0))
         {
             EndDash();
         }
@@ -295,7 +311,7 @@ public class PlayerController : MonoBehaviour
         //
         // Jumping
         //
-        if (Input.GetButtonDown("Jump") && (isGrounded || isOnWall))
+        if (inputManager.jumpPressed && (isGrounded || isOnWall))
         {
             isAttacking = false;
             jumpRequest = true;
@@ -375,7 +391,7 @@ public class PlayerController : MonoBehaviour
             currentGroundedForce += -rb2d.velocity.y;
 
         rb2d.velocity = new Vector2(0.0f, rb2d.velocity.y) + ((Vector2)angleObject.right * new Vector2(movement.x, 1)); // Move player if left or right is pressed
-        if (!Input.GetButton("Jump") && isGrounded && !isRebounding)
+        if (!inputManager.jumpHeld && isGrounded && !isRebounding)
             rb2d.velocity = new Vector2(rb2d.velocity.x, -currentGroundedForce); // apply downward force to stop player from flying off of slopes   
     }
 
@@ -420,22 +436,30 @@ public class PlayerController : MonoBehaviour
         endHurtTime = Time.time + HurtLength;
     }
 
-    public void Attack(string attackAnimation, float currentAttackDamage, float attackTime, Vector2 currentAttackForce)
+    public void Attack(string attackAnimation, float currentAttackDamage, float attackTime, Vector2 currentAttackForce, bool isAttackGrounded)
     {
+        groundedAttack = isAttackGrounded;
         attackForce = currentAttackForce; // Get force
         attackDamage = currentAttackDamage; // Get damage
         isAttacking = true;
         StartCoroutine(Attacking(attackTime));
         spriteAnimator.ChangeAnimationState(attackAnimation);
+        playerAudioManager.Play("Attack1");
     }
 
     IEnumerator Attacking(float duration)
     {
         float normalizedTime = 0; // time since coroutine started
+        
 
         while (normalizedTime <= duration && isAttacking)
         {
             normalizedTime += Time.deltaTime / duration; // count up every loop (time.deltatime is the time between each frame)
+
+            if (groundedAttack && !isGrounded && rb2d.velocity.y > 0)
+            {
+                normalizedTime += 100;
+            }
 
             yield return null;
         }

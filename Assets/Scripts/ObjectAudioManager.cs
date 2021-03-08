@@ -24,13 +24,24 @@ public class ObjectAudioManager : MonoBehaviour
 
     public void Play (string name)
     {
-        Sound s = Array.Find(sounds, sound => sound.name == name);
+        Sound s = Array.Find(sounds, sound => sound.name == name); // find the sound in the array
         if (s == null) // stops errors from occuring from typos
         {
             Debug.LogWarning("Sound: " + name + "not found!");
             return;
         }
-        s.source.Play();
+        s.source.Play(); // Play it!
+    }
+
+    public void Stop (string name)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name); // find sound in the array
+        if (s == null) // stops errors from occuring from typos
+        {
+            Debug.LogWarning("Sound: " + name + "not found!");
+            return;
+        }
+        s.source.Stop(); // Stop it!
     }
     
 }
