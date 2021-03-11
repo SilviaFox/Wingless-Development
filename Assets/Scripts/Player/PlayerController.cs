@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float groundedForce = 5f; // Force applied constantly when on the ground to make sure the player stays on the ground
     [SerializeField] float slopeCounterForce = 2; // Applied multiple that is taken away from the current grounded force
     [SerializeField] float maxDownwardVelocity = 5; // Maximum downward speed the player can travel in the air
+    [SerializeField] float airSmoothingAmount = 1.5f; // Instead of setting speed to 0, we divide it by a certain amount to give a smoother feel
+    [SerializeField] float velocityThreshold = 0.5f; // Once x velocity is below this number it is set back to 0
 
     [SerializeField] float wallJumpMoveCooldown = 0.5f; // cooldown before player can move again after walljumping
     float nextWallJumpTime = 0;
@@ -165,6 +167,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(rb2d.velocity.x >= moveSpeed && !isDashing) // If velocity is surpassing move speed
+        {
+            rb2d.velocity = new Vector2(moveSpeed, rb2d.velocity.y); // reset velocity back to movespeed
+        }
+        else if(rb2d.velocity.x <= -moveSpeed && !isDashing) // Same for moving left
+        {
+            rb2d.velocity = new Vector2(-moveSpeed, rb2d.velocity.y);
+        }
 
         isFacingLeft = playerSprite.flipX;
         if (isFacingLeft)
@@ -389,7 +399,14 @@ public class PlayerController : MonoBehaviour
         else if (rb2d.velocity.y < 0)
             currentGroundedForce += -rb2d.velocity.y;
 
-        rb2d.velocity = new Vector2(movement.x, rb2d.velocity.y); // Move player if left or right is pressed
+        if (movement.x != 0) // If player is moving
+            rb2d.velocity = new Vector2(movement.x, rb2d.velocity.y); // Move player if left or right is pressed
+        else if ((rb2d.velocity.x > 0 && rb2d.velocity.x <= velocityThreshold) || (rb2d.velocity.x < 0 && rb2d.velocity.x >= -velocityThreshold))
+            rb2d.velocity = new Vector2(0.0f, rb2d.velocity.y);
+        else if (!isGrounded) // If player is not moving and is in the air
+            rb2d.velocity = new Vector2(rb2d.velocity.x * airSmoothingAmount, rb2d.velocity.y);
+        
+
         if (!inputManager.jumpHeld && isGrounded && !isRebounding)
              rb2d.velocity = new Vector2(rb2d.velocity.x, -currentGroundedForce); // apply downward force to stop player from flying off of slopes   
     }

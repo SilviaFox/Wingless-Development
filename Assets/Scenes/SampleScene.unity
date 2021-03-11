@@ -864,7 +864,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3854961, y: 1}
+    m_SensorSize: {x: 1.7557251, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -1357,7 +1357,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00013733, y: -80.3}
+  m_AnchoredPosition: {x: 0, y: -80.3}
   m_SizeDelta: {x: 352.15582, y: 47.4908}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &548773950
@@ -1470,7 +1470,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00013733, y: -127.79}
+  m_AnchoredPosition: {x: 0, y: -127.79}
   m_SizeDelta: {x: 352.15582, y: 47.4908}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &623924842
@@ -1884,10 +1884,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TrackedObjectOffset: {x: 0, y: 0, z: 0}
-  m_LookaheadTime: 0.35
+  m_LookaheadTime: 0.15
   m_LookaheadSmoothing: 1.2
   m_LookaheadIgnoreY: 0
-  m_XDamping: 0.3
+  m_XDamping: 0.4
   m_YDamping: 1.5
   m_ZDamping: 1
   m_TargetMovementOnly: 1
@@ -1960,7 +1960,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00013733, y: -175.28}
+  m_AnchoredPosition: {x: 0, y: -175.28}
   m_SizeDelta: {x: 352.15582, y: 47.4908}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &797728985
@@ -7847,6 +7847,8 @@ MonoBehaviour:
   groundedForce: 4.5
   slopeCounterForce: 1.5
   maxDownwardVelocity: 15
+  airSmoothingAmount: 0.5
+  velocityThreshold: 0.1
   wallJumpMoveCooldown: 0.15
   idleMaterial: {fileID: 6200000, guid: 52114525979d61f4da9ec5f5b4e7889e, type: 2}
   movingMaterial: {fileID: 6200000, guid: f226b0132b7f0924fa78a8583929e275, type: 2}
@@ -8150,6 +8152,14 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 2089689337}
     m_ColliderPaths:
+    - - X: 10000000
+        Y: 250000000
+      - X: -50000000
+        Y: 250000000
+      - X: -50000000
+        Y: 220000000
+      - X: 10000000
+        Y: 220000000
     - - X: -80000000
         Y: 120000000
       - X: -70000000
@@ -8166,14 +8176,6 @@ CompositeCollider2D:
         Y: 110000000
       - X: -80000000
         Y: 110000000
-    - - X: 10000000
-        Y: 250000000
-      - X: -50000000
-        Y: 250000000
-      - X: -50000000
-        Y: 220000000
-      - X: 10000000
-        Y: 220000000
     - - X: 1020000000
         Y: 210000000
       - X: 990000000
@@ -8314,8 +8316,8 @@ CompositeCollider2D:
         Y: 165416656
       - X: 299166656
         Y: 165000000
-      - X: 297916672
-        Y: 163333328
+      - X: 297500000
+        Y: 164166672
       - X: 295833344
         Y: 163333328
       - X: 290000000
@@ -8332,22 +8334,6 @@ CompositeCollider2D:
         Y: 110000000
       - X: 368333312
         Y: 110000000
-    - - X: 290000000
-        Y: 139791664
-      - X: 290000000
-        Y: 140000000
-      - X: 300000000
-        Y: 140000000
-      - X: 300000000
-        Y: 139791664
-    - - X: 290000000
-        Y: 130000000
-      - X: 290000000
-        Y: 130208328
-      - X: 300000000
-        Y: 130208328
-      - X: 300000000
-        Y: 130000000
     - - X: 520000000
         Y: 130000000
       - X: 490000000
@@ -8546,23 +8532,13 @@ CompositeCollider2D:
       - {x: 30.833332, y: 16.958332}
       - {x: 30.624992, y: 16.791664}
       - {x: 30.333332, y: 16.708332}
-      - {x: 29.916662, y: 16.499996}
-      - {x: 29.791655, y: 16.333332}
-      - {x: 29.583328, y: 16.33333}
+      - {x: 29.583334, y: 16.333332}
       - {x: 29, y: 15.999984}
-      - {x: 29.000029, y: 14}
-      - {x: 30, y: 13.999971}
-      - {x: 29.999971, y: 13.979167}
-      - {x: 29, y: 13.979196}
       - {x: 28.999971, y: 14}
       - {x: 26.041658, y: 13.999986}
       - {x: 26, y: 13.916661}
       - {x: 26.000006, y: 11.124993}
       - {x: 26.08335, y: 11}
-    - - {x: 30, y: 13.00003}
-      - {x: 29, y: 13.00003}
-      - {x: 29.000029, y: 13.020833}
-      - {x: 30, y: 13.020803}
     - - {x: 51.999973, y: 10}
       - {x: 51.999973, y: 13}
       - {x: 49, y: 12.99997}

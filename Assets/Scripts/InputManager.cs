@@ -19,6 +19,7 @@ public class InputManager : MonoBehaviour
     [HideInInspector] public bool attackPressed; // Has attack been pressed
 
     [HideInInspector] public float pauseInput;
+    bool allowPauseInput = true;
     [HideInInspector] public bool pauseSelect;
 
     
@@ -69,6 +70,9 @@ public class InputManager : MonoBehaviour
 
     void GetMenuInput()
     {
+        if (!allowPauseInput)
+            pauseInput = 0;
+
         shootHeld = Input.GetButton("Shoot"); // to fix a bug with releasing the charge button while paused.
 
         if (Input.GetButtonDown("Pause"))
@@ -77,14 +81,14 @@ public class InputManager : MonoBehaviour
             gameManager.Unpause();
         }
 
-        if (Input.GetButtonDown("Vertical")) // On the initial press of up or down
+        if (Input.GetAxisRaw("Vertical") != 0 && allowPauseInput)
         {
             pauseInput = Input.GetAxisRaw("Vertical"); // Get the direction pressed as a float
+            allowPauseInput = false;
         }
-        else
-        {
-            pauseInput = 0; // Reset after button isn't down
-        }
+        else if (Input.GetAxisRaw("Vertical") == 0 && !allowPauseInput)
+            allowPauseInput = true;
+        
 
         pauseSelect = Input.GetButtonDown("Jump");
 
