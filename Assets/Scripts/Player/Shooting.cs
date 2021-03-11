@@ -74,6 +74,7 @@ public class Shooting : MonoBehaviour
             ableToShoot = true;
         else
             ableToShoot = false;
+
         
         // Charge if button is held
 
@@ -154,6 +155,25 @@ public class Shooting : MonoBehaviour
         nextFireTime = Time.time + timeBetweenFire;
         currentChargeLevel = 0;
     }
+
+    public void OnUnpause()
+    {
+        if(!inputManager.shootHeld && currentChargeLevel > 0)
+        {   
+            if (bulletCounter.bulletAmount < maxBullets) // If the maxiumum amount of bullets has not been reached
+                Shoot(currentChargeLevel);
+
+            chargeParticles.SetActive(false);
+        }
+        else if (!inputManager.shootHeld)
+        {
+            currentChargeLevel = 0;
+            chargeParticles.SetActive(false);
+        }
+        // TODO: CALL THIS ON UNPAUSE AND MAKE IT SO THAT IF THE PLAYER ISN'T HOLDING SHOOT THE CURRENT FIRE GETS RELEASED.
+    }
+
+
 
 
 }

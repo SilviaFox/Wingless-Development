@@ -3,22 +3,31 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    private void Update()
+
+    [SerializeField] GameObject pauseMenu;
+    Shooting shootingScript;
+
+    private void Awake()
     {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
+        shootingScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Shooting>();
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void Pause()
     {
+        pauseMenu.SetActive(true);
+        pauseMenu.GetComponent<Animator>().Play("PauseMenu_FadeIn");
         Time.timeScale = 0.0f;
     }
 
     public void Unpause()
     {
+        pauseMenu.SetActive(false);
         Time.timeScale = 1.0f;
+        shootingScript.OnUnpause();
     }
 }

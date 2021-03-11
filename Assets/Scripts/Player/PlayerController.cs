@@ -30,8 +30,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float slopeCounterForce = 2; // Applied multiple that is taken away from the current grounded force
     [SerializeField] float maxDownwardVelocity = 5; // Maximum downward speed the player can travel in the air
 
-    [SerializeField] Transform angleObject;
-
     [SerializeField] float wallJumpMoveCooldown = 0.5f; // cooldown before player can move again after walljumping
     float nextWallJumpTime = 0;
 
@@ -168,22 +166,20 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 
-        
-
         isFacingLeft = playerSprite.flipX;
         if (isFacingLeft)
             attackCollider.offset = leftAttackColliderOffset;
         else
             attackCollider.offset = attackColliderOffset;
-
-        if (!jumpRequest && !isOnWall && !isRebounding)
+        
+        if (!jumpRequest && !isRebounding)
         {
             // Check to see if player is grounded   
             isGrounded = Physics2D.OverlapBox(boxCenter + colliderOffset, boxSize, 0f, groundedMask) != null;
         }
         
         if (!isHurt && !isDead) // If not in hurt state and not dead
-        InputAndResponse();
+            InputAndResponse();
 
         else if(Time.time >= endHurtTime)
         {
@@ -201,6 +197,9 @@ public class PlayerController : MonoBehaviour
 
 
         CapDownwardVelocity();
+
+        if (rb2d.velocity.y >= 0 && !isGrounded)
+            isGrounded = false;
 
         
     }
@@ -390,9 +389,9 @@ public class PlayerController : MonoBehaviour
         else if (rb2d.velocity.y < 0)
             currentGroundedForce += -rb2d.velocity.y;
 
-        rb2d.velocity = new Vector2(0.0f, rb2d.velocity.y) + ((Vector2)angleObject.right * new Vector2(movement.x, 1)); // Move player if left or right is pressed
+        rb2d.velocity = new Vector2(movement.x, rb2d.velocity.y); // Move player if left or right is pressed
         if (!inputManager.jumpHeld && isGrounded && !isRebounding)
-            rb2d.velocity = new Vector2(rb2d.velocity.x, -currentGroundedForce); // apply downward force to stop player from flying off of slopes   
+             rb2d.velocity = new Vector2(rb2d.velocity.x, -currentGroundedForce); // apply downward force to stop player from flying off of slopes   
     }
 
     void Dash()
@@ -438,12 +437,14 @@ public class PlayerController : MonoBehaviour
 
     public void Attack(string attackAnimation, float currentAttackDamage, float attackTime, Vector2 currentAttackForce, bool isAttackGrounded)
     {
+        spriteAnimator.ChangeAnimationState(attackAnimation);
+
         groundedAttack = isAttackGrounded;
         attackForce = currentAttackForce; // Get force
         attackDamage = currentAttackDamage; // Get damage
+
         isAttacking = true;
         StartCoroutine(Attacking(attackTime));
-        spriteAnimator.ChangeAnimationState(attackAnimation);
         playerAudioManager.Play("Attack1");
     }
 
