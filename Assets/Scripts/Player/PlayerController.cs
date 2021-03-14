@@ -183,10 +183,9 @@ public class PlayerController : MonoBehaviour
             attackCollider.offset = attackColliderOffset;
         
         if (!jumpRequest && !isRebounding)
-        {
             // Check to see if player is grounded   
             isGrounded = Physics2D.OverlapBox(boxCenter + colliderOffset, boxSize, 0f, groundedMask) != null;
-        }
+
         
         if (!isHurt && !isDead) // If not in hurt state and not dead
             InputAndResponse();
@@ -240,6 +239,7 @@ public class PlayerController : MonoBehaviour
         if (Time.time >= nextWallJumpTime)
         {  
             movement.x = inputX * moveSpeed;
+            Debug.Log(movement);
         }
         else
             movement.x = 0;

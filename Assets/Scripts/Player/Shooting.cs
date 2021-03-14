@@ -44,6 +44,9 @@ public class Shooting : MonoBehaviour
         ParticleSystem chargeParticleSystem = chargeParticles.GetComponent<ParticleSystem>();
         chargeParticleSystemMain = chargeParticleSystem.main;
 
+        bulletCounter.IncreaseBulletAmount(); // Add 1 to the current amount of bullets
+
+
     }
 
     
@@ -124,28 +127,22 @@ public class Shooting : MonoBehaviour
 
     void Shoot(int chargeLevel)
     {
-        if (!playerController.isOnWall)
+        if (!playerController.isOnWall) // If not on wall
         {
-            if (playerController.isFacingLeft)
-            {
-                currentBulletSpawnPos = leftBulletSpawnPosition.position;
-            }
+            if (playerController.isFacingLeft) // Facing left
+                currentBulletSpawnPos = leftBulletSpawnPosition.position; // Spawn from the left
+        
             else
-            {
-            currentBulletSpawnPos = bulletSpawnPosition.position;
-            }
+                currentBulletSpawnPos = bulletSpawnPosition.position; // Spawn from the right
+        
         }
         else
         {
-            if (playerController.isFacingLeft)
-            {
+            if (playerController.isFacingLeft) // Shoot from the oppsosite position if on a wall
                 currentBulletSpawnPos = bulletSpawnPosition.position;
-                
-            }
+
             else
-            {
                 currentBulletSpawnPos = leftBulletSpawnPosition.position;
-            }   
         }
 
         bulletCounter.IncreaseBulletAmount(); // Add 1 to the current amount of bullets
@@ -170,7 +167,6 @@ public class Shooting : MonoBehaviour
             currentChargeLevel = 0;
             chargeParticles.SetActive(false);
         }
-        // TODO: CALL THIS ON UNPAUSE AND MAKE IT SO THAT IF THE PLAYER ISN'T HOLDING SHOOT THE CURRENT FIRE GETS RELEASED.
     }
 
 

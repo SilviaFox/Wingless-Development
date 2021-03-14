@@ -16,7 +16,6 @@ public class PlayerJumpCalculator : MonoBehaviour
     [SerializeField] float wallJumpCheckOffset = 0.5f; // vertical offset of the raycast
     [SerializeField] float wallAttatchForce = 1f; // force applied to the player when they attatch to a wall
     [SerializeField] LayerMask mask; // mask for what the raycast can hit (ie, walls)
-    [SerializeField] GameObject wallJumpParticles; // Particles that appear when the player is attatched to a wall
 
     bool initialWallCheck = true; // is this the initial check for a wall?
     Rigidbody2D rb2d;
@@ -57,7 +56,7 @@ public class PlayerJumpCalculator : MonoBehaviour
             // Disable walljump related things
             playerController.isOnWall = false;
             
-            if (rb2d.velocity.y < 0) // Jump physics
+            if (rb2d.velocity.y < 0 && !playerController.isGrounded) // Jump physics
                 rb2d.gravityScale = jumpFallMultiplier;
 
             else if (!playerController.isRebounding && (rb2d.velocity.y > 0 && !inputManager.jumpHeld && !playerController.isGrounded))

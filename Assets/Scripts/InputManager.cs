@@ -3,10 +3,12 @@
 public class InputManager : MonoBehaviour
 {
     GameManager gameManager;
+    DialogueManager dialogueManager;
 
     [SerializeField] int gameState = 1; // State the player is in.
     // 1 - Player can be controlled
     // 2 - In Pause Menu
+    // 3 - In Dialogue Menu
 
     [HideInInspector] public float inputX; // Directional input for the x axis
     [HideInInspector] public bool dashPressed; // Has dash been pressed
@@ -18,14 +20,20 @@ public class InputManager : MonoBehaviour
     [HideInInspector] public bool shootReleased; // Has shoot been released
     [HideInInspector] public bool attackPressed; // Has attack been pressed
 
+    [HideInInspector] public bool interacting; // Directional input for the y axis
+    bool allowInteract;
+
     [HideInInspector] public float pauseInput;
     bool allowPauseInput = true;
     [HideInInspector] public bool pauseSelect;
+
+    [HideInInspector] public bool goToNextDialogue;
 
     
     private void Awake()
     {
         gameManager = GetComponent<GameManager>();
+        dialogueManager = FindObjectOfType<DialogueManager>();
     }
     // Update is called once per frame
     void Update()
@@ -39,7 +47,10 @@ public class InputManager : MonoBehaviour
             case 2:
                 GetMenuInput();
             break;
-
+            
+            case 3:
+                GetDialogueInput();
+            break;
         }
     }
 
@@ -65,7 +76,11 @@ public class InputManager : MonoBehaviour
             gameState = 2; // In Menu
             gameManager.Pause(); // Pause the game
         }
-
+        // Interaction
+        if (Input.GetAxisRaw("Vertical") > 0 && !allowInteract)
+            interacting = true;
+        else
+            interacting = false;
     }
 
     void GetMenuInput()
@@ -90,9 +105,23 @@ public class InputManager : MonoBehaviour
             allowPauseInput = true;
         
 
-        pauseSelect = Input.GetButtonDown("Jump");
+        pauseSelect = Input.GetButtonDown("Jump"); // Select item from pause menu
 
         if (pauseSelect)
             gameState = 1;
+    }
+
+    void GetDialogueInput()
+    {
+        interacting = false;
+           
+        if (Input.GetButtonDown("Jump"))
+            dialogueManager.DisplayNextSentence();
+                       
+    }
+
+    public void ChangeGameState(int newGameState)
+    {
+        gameState = newGameState;
     }
 }

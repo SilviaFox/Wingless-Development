@@ -12,6 +12,7 @@ TagManager:
   - PlayerHealth
   - GameManager
   - PlayerMelee
+  - MovingPlatform
   layers:
   - Default
   - TransparentFX
