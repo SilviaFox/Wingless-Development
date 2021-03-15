@@ -4,11 +4,13 @@ public class NPCScript : MonoBehaviour
 {
     SpriteAnimator spriteAnimator;
     DialogueTrigger dialogueTrigger;
+    InputManager inputManager;
 
     private void Awake()
     {
         spriteAnimator = GetComponent<SpriteAnimator>();
         dialogueTrigger = GetComponent<DialogueTrigger>();
+        inputManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<InputManager>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -17,6 +19,7 @@ public class NPCScript : MonoBehaviour
         {
             spriteAnimator.ChangeAnimationState("NPC_ResistanceSoldierTalkRadius");
             dialogueTrigger.allowEnable = true;
+            inputManager.dialogueTrigger = dialogueTrigger;
         }
     }
 

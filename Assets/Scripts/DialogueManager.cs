@@ -56,7 +56,7 @@ public class DialogueManager : MonoBehaviour
     void EndDialogue()
     {
         Time.timeScale = 1;
-        inputManager.ChangeGameState(1);
+        inputManager.EndOfDialogue();
         dialogueBox.GetComponent<Animator>().Play("Dialogue_End");
     }
 

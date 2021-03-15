@@ -27,7 +27,11 @@ public class MeleeSystem : MonoBehaviour
         }
 
 
-        if (inputManager.attackPressed && !playerController.isAttacking && !playerController.isShooting)
+        
+    }
+
+    public void Attack() {
+        if (!playerController.isAttacking && !playerController.isShooting)
         {
 
             if (playerController.isGrounded && currentGroundedAttack != attacks.Length - 1) // Do Ground Attack

@@ -49,21 +49,8 @@ public class Shooting : MonoBehaviour
 
     }
 
-    
-
-    // Update is called once per frame
-    void Update()
-    {
-        // Disable everything if the player gets hurt
-        if (playerController.isHurt || playerController.isDead)
-        {
-            chargeParticles.SetActive(false);
-            currentChargeLevel = 0;
-            hasBeenDamaged = true;
-        }
-
-        // Shoot when the button is pressed
-        if (ableToShoot && inputManager.shootPressed)
+    public void InitialShot() {
+        if (ableToShoot)
         {
             playerController.isShooting = true; // Play Shooting animation
 
@@ -72,16 +59,13 @@ public class Shooting : MonoBehaviour
             
             nextChargeTime = Time.time + chargeLevelTimes[0];
         }
+    }
 
-        if (nextFireTime <= Time.time && !playerController.isDead && !playerController.isHurt && !playerController.isAttacking && !hasBeenDamaged)
-            ableToShoot = true;
-        else
-            ableToShoot = false;
+    public void HoldShot() {
 
-        
-        // Charge if button is held
+        Debug.Log("This has been triggered");
 
-        if (ableToShoot && inputManager.shootHeld)
+        if (ableToShoot)
         {
             chargeParticles.SetActive(true); // Activate the charging particles
             chargeParticleSystemMain.startColor = chargeParticleColors[currentChargeLevel]; // Change color of particles
@@ -97,32 +81,45 @@ public class Shooting : MonoBehaviour
         {
             playerController.isShooting = false;
         }
+    }
 
-        
-
+    public void ReleaseShot() {
         // Release a charged shot
-        if (ableToShoot && inputManager.shootReleased) // When the player presses the shoot button
-        {
-            chargeParticles.SetActive(false);
-            
+
+        chargeParticles.SetActive(false);
+
+        if (ableToShoot) // When the player presses the shoot button
+        {    
             if (bulletCounter.bulletAmount < maxBullets) // If the maxiumum amount of bullets has not been reached
                 Shoot(currentChargeLevel);
             
         }
-        else if (inputManager.shootReleased && hasBeenDamaged)
+        else if (hasBeenDamaged)
             hasBeenDamaged = false;
+        
+    }
+
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (nextFireTime <= Time.time && !playerController.isDead && !playerController.isHurt && !playerController.isAttacking && !hasBeenDamaged)
+            ableToShoot = true;
+        else
+            ableToShoot = false;
 
         if (nextFireTime <= Time.time && !inputManager.shootHeld)
         {
             playerController.isShooting = false;
             
         }
-
-        
-
-        if (inputManager.shootReleased)
+        // Disable everything if the player gets hurt
+        if (playerController.isHurt || playerController.isDead)
+        {
             chargeParticles.SetActive(false);
-
+            currentChargeLevel = 0;
+            hasBeenDamaged = true;
+        }
     }
 
     void Shoot(int chargeLevel)

@@ -63,9 +63,6 @@ public class PauseMenuSystem : MonoBehaviour
             ChangeToButton(); // Change to another button
         }
 
-        if (inputManager.pauseSelect)
-            OnSelect();
-
     }
 
     void ChangeToButton()
@@ -74,10 +71,8 @@ public class PauseMenuSystem : MonoBehaviour
         menuText[currentButtonSelected].fontSize = highlightedTextSize; // Change the size of the current selected text
     }
 
-    void OnSelect()
-    {
-        
-
+    public void Select()
+    {   
         switch(menuText[currentButtonSelected].gameObject.name)
         {
             case "Resume":

@@ -229,6 +229,34 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void InitializeDash() {
+        if (movement.x != 0 && (dashStage == 1 || dashStage == 2 || dashStage == 8) && Time.time >= nextDashTime && !isHurt)
+        {
+            if (isGrounded) // Initiate the dash if on the ground
+            {
+                dashHasEnded = false;
+                // This will activate the Dash() function
+                isDashing = true;
+
+                // Make Ghosts
+                dashGhosts.makeGhost = true;
+
+                // Reset the timers
+                nextDashTime = Time.time + 1f / dashRate;
+                currentDashLength = Time.time + dashLength;
+            }
+            // Allow for dash jumping and play Dash sound
+            if(dashStage == 1 && isGrounded)
+            {
+                dashStage += 1;
+                allowDashSound = true;
+            }
+            else
+                dashStage = 0;
+        }
+        
+    }
+
     private void InputAndResponse() // all things to do with pressing buttons and making the player react are here
     {
         //
@@ -239,7 +267,6 @@ public class PlayerController : MonoBehaviour
         if (Time.time >= nextWallJumpTime)
         {  
             movement.x = inputX * moveSpeed;
-            Debug.Log(movement);
         }
         else
             movement.x = 0;
@@ -276,35 +303,8 @@ public class PlayerController : MonoBehaviour
         if(rb2d.velocity.y < 0)
             isRebounding = false;
 
-        #region Dashing
-        
-        // Start Dash
-        if (inputManager.dashPressed && movement.x != 0 && (dashStage == 1 || dashStage == 2 || dashStage == 8) && Time.time >= nextDashTime)
-        {
-            if (isGrounded) // Initiate the dash if on the ground
-            {
-                dashHasEnded = false;
-                // This will activate the Dash() function
-                isDashing = true;
-
-                // Make Ghosts
-                dashGhosts.makeGhost = true;
-
-                // Reset the timers
-                nextDashTime = Time.time + 1f / dashRate;
-                currentDashLength = Time.time + dashLength;
-            }
-            // Allow for dash jumping and play Dash sound
-            if(dashStage == 1 && isGrounded)
-            {
-                dashStage += 1;
-                allowDashSound = true;
-            }
-            else
-                dashStage = 0;
-        }
         // End Dash
-        else if (isHurt)
+        if (isHurt)
         {
             EndDash();
         }
@@ -312,22 +312,16 @@ public class PlayerController : MonoBehaviour
         {
             EndDash();
         }
-        
-        #endregion
 
-        
+    }
 
-        //
-        // Jumping
-        //
-        if (inputManager.jumpPressed && (isGrounded || isOnWall))
+    public void RecieveJumpInput() {
+        if (isGrounded || isOnWall)
         {
             isAttacking = false;
             jumpRequest = true;
             dashStage *= 4;
-            
         }
-
     }
 
     // Physics are used in Fixed Update

@@ -1,14 +1,22 @@
-﻿using UnityEngine;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
     GameManager gameManager;
-    DialogueManager dialogueManager;
 
     [SerializeField] int gameState = 1; // State the player is in.
     // 1 - Player can be controlled
     // 2 - In Pause Menu
     // 3 - In Dialogue Menu
+    InputMaster controls;
+
+    GameObject player;
+    PlayerController playerController;
+    Shooting shootingScript;
+    MeleeSystem meleeSystem;
+    DialogueManager dialogueManager;
+    [HideInInspector] public DialogueTrigger dialogueTrigger;
 
     [HideInInspector] public float inputX; // Directional input for the x axis
     [HideInInspector] public bool dashPressed; // Has dash been pressed
@@ -29,95 +37,114 @@ public class InputManager : MonoBehaviour
 
     [HideInInspector] public bool goToNextDialogue;
 
-    
+    #region Enable Or Disable Input
+        private void OnEnable() {
+            controls.Player.Disable();
+            controls.Player.Enable();
+        }
+
+        private void Pause() {
+            controls.Player.Disable();
+            controls.Pause.Enable();
+            gameManager.Pause();
+        }
+
+        private void Unpause() {
+            controls.Pause.Disable();
+            controls.Player.Enable();
+            gameManager.Unpause();
+        }
+
+        private void PauseSelect() {
+            controls.Pause.Disable();
+            gameManager.PauseSelect();
+        }
+
+        private void Dialogue() {
+            controls.Player.Disable();
+            controls.Dialogue.Enable();
+        }
+
+        public void EndOfDialogue() {
+            controls.Dialogue.Disable();
+            controls.Player.Enable();
+        }
+
+
+    #endregion
+
+
     private void Awake()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
+        shootingScript = player.GetComponent<Shooting>();
+        playerController = player.GetComponent<PlayerController>();
+        meleeSystem = player.GetComponent<MeleeSystem>();
+        dialogueManager = GetComponent<DialogueManager>();
+
         gameManager = GetComponent<GameManager>();
-        dialogueManager = FindObjectOfType<DialogueManager>();
+
+        // New Input
+        controls = new InputMaster();
+        #region Gameplay Input
+            // Jumping
+            controls.Player.Jump.started += ctx => playerController.RecieveJumpInput();
+            controls.Player.Jump.started += ctx => jumpHeld = true;
+            controls.Player.Jump.canceled += ctx => jumpHeld = false;
+            // Shooting
+            controls.Player.Fire.started += ctx => shootingScript.InitialShot();
+            controls.Player.Fire.started += ctx => shootHeld = true;
+            controls.Player.Fire.canceled += ctx => shootingScript.ReleaseShot();
+            controls.Player.Fire.canceled += ctx => shootHeld = false;
+            // Attacking
+            controls.Player.Attack.started += ctx => meleeSystem.Attack();
+            // Dashing
+            controls.Player.Dash.started += ctx => playerController.InitializeDash();
+            controls.Player.Dash.started += ctx => dashReleased = false;
+            controls.Player.Dash.canceled += ctx => dashReleased = true;
+            // Interaction
+            controls.Player.Interact.started += ctx => CheckForItem();
+
+            // Pause Menu
+            controls.Player.Pause.started += ctx => Pause();
+            controls.Pause.Unpause.started += ctx => Unpause();
+            controls.Pause.Select.started += ctx => PauseSelect();
+
+            // Dialogue
+            controls.Dialogue.Next.started += ctx => dialogueManager.DisplayNextSentence();
+
+        #endregion
+
+        
     }
     // Update is called once per frame
     void Update()
     {
-        switch(gameState){
-            
-            case 1:
-                GetPlayerInput();
-            break;
+        inputX = controls.Player.Move.ReadValue<Vector2>().x; // Get movement input
 
-            case 2:
-                GetMenuInput();
-            break;
-            
-            case 3:
-                GetDialogueInput();
-            break;
-        }
-    }
-
-    void GetPlayerInput()
-    {
-        //Moving
-        inputX = Input.GetAxisRaw("Horizontal");
-        // Dashing
-        dashPressed = Input.GetButtonDown("Dash");
-        dashReleased = Input.GetButtonUp("Dash");
-        // Jumping
-        jumpPressed = Input.GetButtonDown("Jump");
-        jumpHeld = Input.GetButton("Jump");
-        // Shooting
-        shootPressed = Input.GetButtonDown("Shoot");
-        shootHeld = Input.GetButton("Shoot");
-        shootReleased = Input.GetButtonUp("Shoot");
-        //Attacking
-        attackPressed = Input.GetButtonDown("Attack");
-        // Pause
-        if (Input.GetButtonDown("Pause"))
+        if (shootHeld)
         {
-            gameState = 2; // In Menu
-            gameManager.Pause(); // Pause the game
-        }
-        // Interaction
-        if (Input.GetAxisRaw("Vertical") > 0 && !allowInteract)
-            interacting = true;
-        else
-            interacting = false;
-    }
-
-    void GetMenuInput()
-    {
-        if (!allowPauseInput)
-            pauseInput = 0;
-
-        shootHeld = Input.GetButton("Shoot"); // to fix a bug with releasing the charge button while paused.
-
-        if (Input.GetButtonDown("Pause"))
-        {
-            gameState = 1;
-            gameManager.Unpause();
+            shootingScript.HoldShot();
         }
 
-        if (Input.GetAxisRaw("Vertical") != 0 && allowPauseInput)
-        {
-            pauseInput = Input.GetAxisRaw("Vertical"); // Get the direction pressed as a float
-            allowPauseInput = false;
+
+        if (!allowPauseInput) // if pause input is currently not allowed
+            pauseInput = 0; // set it to 0
+
+        if (controls.Pause.Scroll.ReadValue<Vector2>().y != 0 && allowPauseInput) { // if pause input is allowed and up or down is pressed
+            pauseInput = controls.Pause.Scroll.ReadValue<Vector2>().y; // pause input = dpad/key input
+            allowPauseInput = false; // do not allow more inputs until key/pad is released
         }
-        else if (Input.GetAxisRaw("Vertical") == 0 && !allowPauseInput)
+        else if (controls.Pause.Scroll.ReadValue<Vector2>().y == 0 && !allowPauseInput)
             allowPauseInput = true;
-        
-
-        pauseSelect = Input.GetButtonDown("Jump"); // Select item from pause menu
-
-        if (pauseSelect)
-            gameState = 1;
     }
 
-    void GetDialogueInput()
-    {
-        interacting = false;
-           
-        if (Input.GetButtonDown("Jump"))
-            dialogueManager.DisplayNextSentence();
-                       
+    void CheckForItem() {
+        // Check if there is a dialogue trigger
+        if (dialogueTrigger != null) {
+            dialogueTrigger.TriggerDialogue(); // Trigger dialogue
+            Dialogue();
+        }
     }
 
     public void ChangeGameState(int newGameState)
