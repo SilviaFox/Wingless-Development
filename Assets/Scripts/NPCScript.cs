@@ -29,6 +29,7 @@ public class NPCScript : MonoBehaviour
         {
             spriteAnimator.ChangeAnimationState("NPC_ResistanceSoldierIdle");
             dialogueTrigger.allowEnable = false;
+            inputManager.dialogueTrigger = null;
         }
     }
 }

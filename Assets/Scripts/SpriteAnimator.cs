@@ -6,7 +6,7 @@ public class SpriteAnimator : MonoBehaviour
     string currentState; // Current animation state
     Animator animator;
 
-    private void Awake()
+    private void Start()
     {
         animator = GetComponent<Animator>();
     }
@@ -18,6 +18,7 @@ public class SpriteAnimator : MonoBehaviour
 
         //stop the same animation from interrupting itself
         if (currentState == newState) return;
+        
         // Play the animation
         animator.Play(newState);
 

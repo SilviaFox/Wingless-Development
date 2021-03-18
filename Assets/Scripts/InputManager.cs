@@ -1,15 +1,9 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
     GameManager gameManager;
-
-    [SerializeField] int gameState = 1; // State the player is in.
-    // 1 - Player can be controlled
-    // 2 - In Pause Menu
-    // 3 - In Dialogue Menu
-    InputMaster controls;
+    public InputMaster controls;
 
     GameObject player;
     PlayerController playerController;
@@ -19,53 +13,54 @@ public class InputManager : MonoBehaviour
     [HideInInspector] public DialogueTrigger dialogueTrigger;
 
     [HideInInspector] public float inputX; // Directional input for the x axis
-    [HideInInspector] public bool dashPressed; // Has dash been pressed
     [HideInInspector] public bool dashReleased; // Has dash been released
     [HideInInspector] public bool jumpPressed; // Has jump been pressed
     [HideInInspector] public bool jumpHeld; // Is jump being held
-    [HideInInspector] public bool shootPressed; // Has shoot been pressed
     [HideInInspector] public bool shootHeld; // Is shoot being held
-    [HideInInspector] public bool shootReleased; // Has shoot been released
-    [HideInInspector] public bool attackPressed; // Has attack been pressed
 
     [HideInInspector] public bool interacting; // Directional input for the y axis
     bool allowInteract;
 
     [HideInInspector] public float pauseInput;
-    bool allowPauseInput = true;
-    [HideInInspector] public bool pauseSelect;
 
     [HideInInspector] public bool goToNextDialogue;
 
     #region Enable Or Disable Input
-        private void OnEnable() {
+
+        public void DisableAll() { // Disable all of the Action Maps
+            controls.Disable();
+        }
+
+        private void OnEnable() { // On enable, reset the Player Controls
             controls.Player.Disable();
             controls.Player.Enable();
         }
 
-        private void Pause() {
+        private void Pause() { // Pause the game, disable player controls, enable pause controls
+            Debug.Log("Game is Paused");
             controls.Player.Disable();
             controls.Pause.Enable();
             gameManager.Pause();
         }
+        
 
-        private void Unpause() {
+        public void Unpause() { // Unpause the game, enable player controls, disable pause controls
+            controls.Pause.Disable();
+            controls.Player.Enable();
+        }
+
+        public void EscUnpause() { // Unpause using the escape key
             controls.Pause.Disable();
             controls.Player.Enable();
             gameManager.Unpause();
         }
 
-        private void PauseSelect() {
-            controls.Pause.Disable();
-            gameManager.PauseSelect();
-        }
-
-        private void Dialogue() {
+        private void Dialogue() { // Dialogue input
             controls.Player.Disable();
             controls.Dialogue.Enable();
         }
 
-        public void EndOfDialogue() {
+        public void EndOfDialogue() { // When dialogue has ended
             controls.Dialogue.Disable();
             controls.Player.Enable();
         }
@@ -76,44 +71,48 @@ public class InputManager : MonoBehaviour
 
     private void Awake()
     {
+        // Get components
+        gameManager = GetComponent<GameManager>();
+        
+        // Player Components
         player = GameObject.FindGameObjectWithTag("Player");
         shootingScript = player.GetComponent<Shooting>();
         playerController = player.GetComponent<PlayerController>();
         meleeSystem = player.GetComponent<MeleeSystem>();
+
+        // Dialogue manager
         dialogueManager = GetComponent<DialogueManager>();
-
-        gameManager = GetComponent<GameManager>();
-
-        // New Input
+        
         controls = new InputMaster();
-        #region Gameplay Input
-            // Jumping
-            controls.Player.Jump.started += ctx => playerController.RecieveJumpInput();
-            controls.Player.Jump.started += ctx => jumpHeld = true;
-            controls.Player.Jump.canceled += ctx => jumpHeld = false;
-            // Shooting
-            controls.Player.Fire.started += ctx => shootingScript.InitialShot();
-            controls.Player.Fire.started += ctx => shootHeld = true;
-            controls.Player.Fire.canceled += ctx => shootingScript.ReleaseShot();
-            controls.Player.Fire.canceled += ctx => shootHeld = false;
-            // Attacking
-            controls.Player.Attack.started += ctx => meleeSystem.Attack();
-            // Dashing
-            controls.Player.Dash.started += ctx => playerController.InitializeDash();
-            controls.Player.Dash.started += ctx => dashReleased = false;
-            controls.Player.Dash.canceled += ctx => dashReleased = true;
-            // Interaction
-            controls.Player.Interact.started += ctx => CheckForItem();
+                
 
-            // Pause Menu
-            controls.Player.Pause.started += ctx => Pause();
-            controls.Pause.Unpause.started += ctx => Unpause();
-            controls.Pause.Select.started += ctx => PauseSelect();
+            #region Gameplay Input
+                // Jumping
+                controls.Player.Jump.started += ctx => {playerController.RecieveJumpInput(); jumpHeld = true;};
+                controls.Player.Jump.canceled += ctx => jumpHeld = false;
+                // Shooting
+                controls.Player.Fire.started += ctx => {shootingScript.InitialShot(); shootHeld = true;};
+                controls.Player.Fire.canceled += ctx => {shootingScript.ReleaseShot(); shootHeld = false;};
+                // Attacking
+                controls.Player.Attack.started += ctx => meleeSystem.Attack();
+                // Dashing
+                controls.Player.Dash.started += ctx => {
+                    playerController.InitializeDash();
+                    dashReleased = false;
+                };
+                controls.Player.Dash.canceled += ctx => dashReleased = true;
+                // Interaction
+                controls.Player.Interact.started += ctx => CheckForItem();
 
-            // Dialogue
-            controls.Dialogue.Next.started += ctx => dialogueManager.DisplayNextSentence();
+                // Pause Menu
+                controls.Player.Pause.started += ctx => Pause();
+                controls.Pause.Unpause.started += ctx => EscUnpause();
 
-        #endregion
+                // Dialogue
+                controls.Dialogue.Next.started += ctx => dialogueManager.DisplayNextSentence();
+
+            #endregion
+        
 
         
     }
@@ -123,20 +122,8 @@ public class InputManager : MonoBehaviour
         inputX = controls.Player.Move.ReadValue<Vector2>().x; // Get movement input
 
         if (shootHeld)
-        {
             shootingScript.HoldShot();
-        }
-
-
-        if (!allowPauseInput) // if pause input is currently not allowed
-            pauseInput = 0; // set it to 0
-
-        if (controls.Pause.Scroll.ReadValue<Vector2>().y != 0 && allowPauseInput) { // if pause input is allowed and up or down is pressed
-            pauseInput = controls.Pause.Scroll.ReadValue<Vector2>().y; // pause input = dpad/key input
-            allowPauseInput = false; // do not allow more inputs until key/pad is released
-        }
-        else if (controls.Pause.Scroll.ReadValue<Vector2>().y == 0 && !allowPauseInput)
-            allowPauseInput = true;
+        
     }
 
     void CheckForItem() {
@@ -145,10 +132,5 @@ public class InputManager : MonoBehaviour
             dialogueTrigger.TriggerDialogue(); // Trigger dialogue
             Dialogue();
         }
-    }
-
-    public void ChangeGameState(int newGameState)
-    {
-        gameState = newGameState;
     }
 }

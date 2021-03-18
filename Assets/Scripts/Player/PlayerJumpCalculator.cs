@@ -23,6 +23,7 @@ public class PlayerJumpCalculator : MonoBehaviour
     InputManager inputManager;
     RaycastHit2D rightWallDetection;
     RaycastHit2D leftWallDetection;
+    
 
     // Awake is called before starting
     void Awake()
@@ -35,8 +36,13 @@ public class PlayerJumpCalculator : MonoBehaviour
     private void Update()
     {
         // Raycasts to check for walls
-        rightWallDetection = Physics2D.Raycast(transform.position + new Vector3(0.0f, -wallJumpCheckOffset), Vector2.right, wallCheckDistance, mask); // Detects walls to the right of the player
-        leftWallDetection = Physics2D.Raycast(transform.position + new Vector3(0.0f, -wallJumpCheckOffset), Vector2.left, wallCheckDistance, mask); // Detects walls to the right of the player
+        rightWallDetection = Physics2D.Raycast(transform.position + new Vector3(0.0f, wallJumpCheckOffset), Vector2.right, wallCheckDistance, mask); // Detects walls to the right of the player
+        leftWallDetection = Physics2D.Raycast(transform.position + new Vector3(0.0f, wallJumpCheckOffset), Vector2.left, wallCheckDistance, mask); // Detects walls to the right of the player
+
+        if (rightWallDetection || leftWallDetection)
+            playerController.foundWall = true;
+        else
+            playerController.foundWall = false;
     }
 
     // Update is called once per frame

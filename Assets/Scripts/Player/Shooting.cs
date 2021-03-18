@@ -29,6 +29,11 @@ public class Shooting : MonoBehaviour
     PlayerController playerController; // For checking if the player is dead or alive
     InputManager inputManager;
 
+    private void Awake()
+    {
+        inputManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<InputManager>();
+    }
+
     private void Start()
     {
 
@@ -37,8 +42,6 @@ public class Shooting : MonoBehaviour
 
         bulletCounter = GameObject.FindGameObjectWithTag("BulletManager").GetComponent<BulletCounter>();
         playerAudioManager = GameObject.FindGameObjectWithTag("PlayerAudio").GetComponent<ObjectAudioManager>();
-
-        inputManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<InputManager>();
 
         // Get main particle system
         ParticleSystem chargeParticleSystem = chargeParticles.GetComponent<ParticleSystem>();
@@ -62,8 +65,6 @@ public class Shooting : MonoBehaviour
     }
 
     public void HoldShot() {
-
-        Debug.Log("This has been triggered");
 
         if (ableToShoot)
         {
@@ -162,7 +163,8 @@ public class Shooting : MonoBehaviour
         else if (!inputManager.shootHeld)
         {
             currentChargeLevel = 0;
-            chargeParticles.SetActive(false);
+            if (chargeParticles != null)
+                chargeParticles.SetActive(false);
         }
     }
 

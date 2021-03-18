@@ -10,6 +10,7 @@ public class DialogueManager : MonoBehaviour
 
     [SerializeField] Text nameText;
     [SerializeField] Text dialogueText;
+    [SerializeField] float timeForNextChar = 0.01f;
 
     [SerializeField] GameObject dialogueBox;
     
@@ -28,7 +29,6 @@ public class DialogueManager : MonoBehaviour
 
         dialogueBox.SetActive(true);
         dialogueBox.GetComponent<Animator>().Play("Dialogue_Start");
-        inputManager.ChangeGameState(3);
         nameText.text = dialogue.name; // Set the name text to the name of the character
 
         sentences.Clear();
@@ -48,9 +48,9 @@ public class DialogueManager : MonoBehaviour
             EndDialogue(); // End conversation
             return; // return out of function
         }
-
         string sentence = sentences.Dequeue();
-        dialogueText.text = sentence; // Set the dialogue text to the current sentence
+        StopAllCoroutines();
+        StartCoroutine(TypeSentence(sentence, timeForNextChar));
     }
 
     void EndDialogue()
@@ -58,6 +58,15 @@ public class DialogueManager : MonoBehaviour
         Time.timeScale = 1;
         inputManager.EndOfDialogue();
         dialogueBox.GetComponent<Animator>().Play("Dialogue_End");
+    }
+
+    IEnumerator TypeSentence (string sentence, float intervalTime) {
+        dialogueText.text = ""; // Set the dialogue text to the current sentence
+        foreach (char letter in sentence.ToCharArray())
+        {
+            dialogueText.text += letter;
+            yield return new WaitForSecondsRealtime(intervalTime);
+        }
     }
 
 }

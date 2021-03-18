@@ -37,6 +37,7 @@ public class PlayerController : MonoBehaviour
 
     bool landed;
     bool jumpRequest; // when true, request a jump
+    [HideInInspector] public bool foundWall;
 
     [Header("Physics Materials")]
     [SerializeField] PhysicsMaterial2D idleMaterial;
@@ -47,14 +48,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float groundedSkin = 0.05f;
     [SerializeField] LayerMask groundedMask;
 
-    [HideInInspector] public bool isGrounded;
-    [HideInInspector] public bool isOnWall; // true if the player is able to wall jump
+    // Various conditions all created for use here
+    [HideInInspector] public bool isGrounded, isOnWall, isHurt, isDead, isRebounding, isShooting = false, isFacingLeft = false, isAttacking = false;
     float subtractFromBoxSize = 0.05f;
-
-    Vector2 playerSize; // Size of the player collider
-    Vector2 boxCenter; // Center of the player collider
-    Vector2 colliderOffset; // offset of the player collider
-    Vector2 boxSize; // size of the ground detection box
+    
+    // Size of the player collider // Center of the player collider // offset of the player collider // size of the ground detection box
+    Vector2 playerSize, boxCenter, colliderOffset, boxSize;
     
     // Variables for dashing
     [Header("Dash Variables")]
@@ -79,10 +78,6 @@ public class PlayerController : MonoBehaviour
     // Taking damage or getting hurt
     [SerializeField] float HurtLength;
     [SerializeField] float knockbackSpeed;
-
-    [HideInInspector] public bool isHurt; // While in the damaged state, this is true
-
-    [HideInInspector] public bool isDead; // Player is dead when this is 0
     float endHurtTime = 0;
     float hurtDirection;
 
@@ -91,22 +86,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject landingParticles;
     [SerializeField] float landingParticleOffset = -0.5f;
 
-    [HideInInspector] public bool isShooting = false;
-    [HideInInspector] public bool isFacingLeft = false;
-
     // Attacking variables
     [Header("Attack Variables")]
     [SerializeField] BoxCollider2D attackCollider;
     [SerializeField] float airReboundStrength = 10f;
-
-    [HideInInspector] public bool isAttacking = false;
+ 
     float attackEndTime;
     Vector2 attackColliderOffset;
     Vector2 leftAttackColliderOffset;
     [HideInInspector] public Vector2 attackForce;
     [HideInInspector] public float attackDamage;
     [HideInInspector] public bool attackingInAir = false;
-    [HideInInspector] public bool isRebounding;
     bool groundedAttack;
 
     // Animation States
@@ -126,7 +116,7 @@ public class PlayerController : MonoBehaviour
 
     #region Start/Defining Variables
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
         // Get components
 
@@ -257,8 +247,18 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    bool AbleToUseAirAnimations()
+    {
+        if (!isGrounded && !isAttacking)
+            return true;
+        else
+            return false;
+    }
+
     private void InputAndResponse() // all things to do with pressing buttons and making the player react are here
     {
+
+        
         //
         // Running
         //
@@ -271,27 +271,32 @@ public class PlayerController : MonoBehaviour
         else
             movement.x = 0;
         
-        if (!isGrounded && !isAttacking && rb2d.velocity.y > 0)
-            spriteAnimator.ChangeAnimationState(PLAYER_JUMP);
-        else if (!isGrounded && !isAttacking && rb2d.velocity.y < 0)
-            spriteAnimator.ChangeAnimationState(PLAYER_FALL);
+        if (AbleToUseAirAnimations()) {
+            // animations for when in the air
+            if (rb2d.velocity.y > 0)
+                spriteAnimator.ChangeAnimationState(PLAYER_JUMP);
+            else if (rb2d.velocity.y < 0)
+                spriteAnimator.ChangeAnimationState(PLAYER_FALL);
+        }
+        else if (!isAttacking) {
+            // Animations for when grounded
+            if (movement.x != 0 && !foundWall)
+                        spriteAnimator.ChangeAnimationState(PLAYER_RUN); // Play run animation
+            else if (!isShooting)
+                        spriteAnimator.ChangeAnimationState(PLAYER_IDLE); // Play idle animation
+            else
+                spriteAnimator.ChangeAnimationState(PLAYER_IDLE_SHOOT); // Play idle shoot animation
+        }   
 
         switch(movement.x)
         {
             case 0:
                 rb2d.sharedMaterial = idleMaterial; // Make sure the player doesn't slide when idle
-                if (!isShooting && !isAttacking && isGrounded)
-                    spriteAnimator.ChangeAnimationState(PLAYER_IDLE); // Play idle animation
-                else if (!isAttacking && isGrounded)
-                    spriteAnimator.ChangeAnimationState(PLAYER_IDLE_SHOOT); // Play idle shoot animation
+                
             break;
             default:
                 
                 rb2d.sharedMaterial = movingMaterial; // Remove friction from the player
-                if (!isAttacking && isGrounded)
-                    spriteAnimator.ChangeAnimationState(PLAYER_RUN); // Play run animation
-                
-
                 if (movement.x < 0)
                 playerSprite.flipX = true; // Flip the player sprite if moving left
                 else if (movement.x > 0)
@@ -432,7 +437,7 @@ public class PlayerController : MonoBehaviour
         EndDash();
 
         rb2d.sharedMaterial = movingMaterial;
-
+        
         spriteAnimator.ChangeAnimationState(PLAYER_HURT);
         playerAudioManager.Play("Hurt");
 
