@@ -57,10 +57,13 @@ public class Shooting : MonoBehaviour
         {
             playerController.isShooting = true; // Play Shooting animation
 
-            if (bulletCounter.bulletAmount < maxBullets) // If the maxiumum amount of bullets has not been reached
+            if (bulletCounter.bulletAmount < maxBullets && nextFireTime > Time.time) // If the maxiumum amount of bullets has not been reached
+            {
                 Shoot(0);
-            
+            }
+
             nextChargeTime = Time.time + chargeLevelTimes[0];
+            
         }
     }
 
@@ -104,12 +107,12 @@ public class Shooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (nextFireTime <= Time.time && !playerController.isDead && !playerController.isHurt && !playerController.isAttacking && !hasBeenDamaged)
+        if (Time.time >= nextFireTime && !playerController.isDead && !playerController.isHurt && !playerController.isAttacking && !hasBeenDamaged)
             ableToShoot = true;
         else
             ableToShoot = false;
 
-        if (nextFireTime <= Time.time && !inputManager.shootHeld)
+        if (Time.time >= nextFireTime && !inputManager.shootHeld)
         {
             playerController.isShooting = false;
             

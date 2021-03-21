@@ -53,4 +53,10 @@ public class GameManager : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(null);
         
     }
+
+    public void Exit() {
+        Time.timeScale = 1.0f;
+        inputManager.DisableAll();
+        SceneManager.LoadScene("MainMenu");
+    }
 }
