@@ -100,6 +100,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -219,6 +220,12 @@ MonoBehaviour:
   direction: 0
   canSeePlayer: 0
   bullet: {fileID: 4339538917433149918, guid: 088e5e8e8fb5ab4418053026c883fa77, type: 3}
+  coins:
+  - {fileID: 799445236790895839, guid: 6899a87e5e2d49b4fb663c8d8e2fe283, type: 3}
+  - {fileID: 799445236790895839, guid: 65c7dc27e7e70e142a55334dab7795fc, type: 3}
+  - {fileID: 799445236790895839, guid: 49415037925a39a4f8b2afdb46db95d1, type: 3}
+  - {fileID: 799445236790895839, guid: 6899a87e5e2d49b4fb663c8d8e2fe283, type: 3}
+  - {fileID: 799445236790895839, guid: 65c7dc27e7e70e142a55334dab7795fc, type: 3}
 --- !u!114 &-7146622864447785726
 MonoBehaviour:
   m_ObjectHideFlags: 0

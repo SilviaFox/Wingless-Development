@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
 
     [SerializeField] GameObject pauseMenu;
+    [SerializeField] GameObject healthBar;
     public GameObject pauseFirstObject;
     Shooting shootingScript;
     
@@ -20,13 +21,6 @@ public class GameManager : MonoBehaviour
 
     public void Restart() {
             inputManager.DisableAll(); // Disable all current inputs so that they don't cause errors on load
-            // Because of course thats an issue
-            // Seriously, what is up with this new input system?
-            // Like I get why you'd want it to call functions and stuff, but surely you could've done something to make it
-            // At least function somewhat sensically
-            // This doesn't feel optimized for the current scripting API at all, which is silly because its pushed out with
-            // The current scripting API.
-            // We won't even have node stuff out of beta until like... the end of the year.
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     
@@ -36,6 +30,7 @@ public class GameManager : MonoBehaviour
         {
             pauseMenu.SetActive(true);
             pauseMenu.GetComponent<Animator>().Play("PauseMenu_FadeIn");
+            healthBar.SetActive(false);
         }
         
         Time.timeScale = 0.0f;
@@ -51,6 +46,7 @@ public class GameManager : MonoBehaviour
 
         // Clear selected object
         EventSystem.current.SetSelectedGameObject(null);
+        healthBar.SetActive(true);
         
     }
 

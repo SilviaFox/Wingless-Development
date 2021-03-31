@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System;
 using UnityEngine.Audio;
 
@@ -17,9 +18,9 @@ public class ObjectAudioManager : MonoBehaviour
             s.source.clip = s.clip;
 
             s.source.volume = s.volume;
-            s.source.pitch = s.pitch;
+            s.source.pitch = s.maxPitch;
             s.source.loop = s.loop;
-            s.source.spatialBlend = 1;
+            s.source.spatialBlend = 0.5f;
         }
     }
 
@@ -31,6 +32,10 @@ public class ObjectAudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + "not found!");
             return;
         }
+        if (s.randomPitch == true) // If sound has a random pitch
+            s.source.pitch = UnityEngine.Random.Range(s.minPitch, s.maxPitch); // set a random pitch
+
+        Debug.Log(s.source.pitch);
         s.source.Play(); // Play it!
     }
 

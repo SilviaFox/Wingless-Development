@@ -1,34 +1,65 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [SerializeField] float maxHealth = 100f;
-    [SerializeField] GameObject player;
+    public float maxHealth = 100f;
+    [SerializeField] GameObject player, postProcessEffect;
 
-    [HideInInspector] public float health; 
+    ObjectAudioManager audioManager; // Audio manager to play the heal sound
+
+    [HideInInspector] public float health;
+    [HideInInspector] public float visualHealth; 
 
     DeathScript deathScript; // When health is 0, trigger this script
 
     private void Awake()
     {
+        // Set to max health
         health = maxHealth;
+        visualHealth = health;
+
+        audioManager = GameObject.FindGameObjectWithTag("PlayerAudio").GetComponent<ObjectAudioManager>();
         deathScript = GameObject.FindGameObjectWithTag("GameManager").GetComponent<DeathScript>(); // Script for when the player dies
     }
 
-    public void AddHealth(float healingAmount)
+    public IEnumerator AddHealth(float healingAmount)
     {
-        health += healingAmount; // Add health by given amount
+        audioManager.Play("Heal");
+        postProcessEffect.SetActive(true);
 
-        if (health >= maxHealth) // Health caps at 100
-        {
+        // Add healing amount to health
+        health += healingAmount;
+        // Cap health at max
+        if (health > maxHealth)
             health = maxHealth;
+        
+        // Increase visual health amount
+        for (int i = 0; i < healingAmount; i++)
+        {
+
+            if (visualHealth > maxHealth) // Health caps at max
+                visualHealth = maxHealth;
+            else
+                visualHealth ++; // Add health by given amount
+            
+            yield return null;
         }
+
+        // Disable post process so that it can be re-enabled by another health pickup
+        Invoke("DisablePostProcess", .4f);
+    }
+
+    void DisablePostProcess()
+    {
+        postProcessEffect.SetActive(false);
     }
 
     public void RemoveHealth(float damage)
     {
 
-        health -= damage; // Remove health by a given amount
+        health -= damage;
+        visualHealth -= damage; // Remove health by a given amount
 
         if (health <= 0) // Kill player
         {

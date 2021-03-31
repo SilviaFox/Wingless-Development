@@ -18,6 +18,7 @@ public class MoveBullet : MonoBehaviour
     [SerializeField] float bulletSpeed; // speed of bullets
     [SerializeField] float bulletDespawnTime = 0.5f; // time it takes for bullets to despawn
     [SerializeField] float bulletDespawnRate = 0.1f; // speed at which bullets will despawn
+    public bool canGoThroughEnemies = false;
 
     void Awake() // Triggered when object is created
     {
@@ -63,7 +64,7 @@ public class MoveBullet : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        rb2d.MovePosition(rb2d.position + Vector2.right * bulletSpeed * direction); // New position is the current one, plus a direction, times by speed and direction
+        rb2d.MovePosition(rb2d.position + Vector2.right * bulletSpeed * direction * Time.deltaTime); // New position is the current one, plus a direction, times by speed and direction
 
         // Countdown bullet's despawn time and then delete it when it reaches 0 if it is offscreen
         if (bulletOffscreen)

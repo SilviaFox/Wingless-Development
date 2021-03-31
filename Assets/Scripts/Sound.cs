@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Audio;
 
 
 [System.Serializable]
@@ -11,10 +10,15 @@ public class Sound // Creates a class that the AudioManager can call
 
     public AudioClip clip;
 
-    [Range(0f, 1f)]
+    [Range(0f, 3f)]
     public float volume;
+
+    public bool randomPitch;
+
     [Range(.1f, 3f)]
-    public float pitch;
+    public float minPitch;
+    [Range(.1f, 3f)]
+    public float maxPitch; // This is used if random pitch is unchecked
 
     public bool loop;
 

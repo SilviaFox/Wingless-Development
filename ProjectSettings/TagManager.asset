@@ -14,6 +14,8 @@ TagManager:
   - PlayerMelee
   - MovingPlatform
   - PauseMenu
+  - Score
+  - Coin
   layers:
   - Default
   - TransparentFX
@@ -28,7 +30,7 @@ TagManager:
   - Enemies
   - Player
   - PlayerAttack
-  - 
+  - Coin
   - 
   - 
   - 

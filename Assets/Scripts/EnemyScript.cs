@@ -13,6 +13,7 @@ public class EnemyScript : MonoBehaviour
     [HideInInspector] public bool canSeePlayer = false; // true when player has been spotted
 
     [SerializeField] GameObject bullet;
+    [SerializeField] GameObject[] coins;
 
     Rigidbody2D rb2d;
     BulletCounter bulletCounter;
@@ -64,8 +65,11 @@ public class EnemyScript : MonoBehaviour
 
         if (other.CompareTag("Bullet")) // Check to see if the object is a bullet
         {
-            Destroy(other.gameObject); // Destroy Bullet
-            bulletCounter.DecreaseBulletAmount(); // Decrease bullet counter
+            if (!other.GetComponent<MoveBullet>().canGoThroughEnemies) // if bullet cannot go through enemies
+            {
+                Destroy(other.gameObject); // Destroy Bullet
+                bulletCounter.DecreaseBulletAmount(); // Decrease bullet counter
+            }
             
             TakeDamage(other.GetComponent<MoveBullet>().damage);
             spriteAnimator.ChangeAnimationState(TEST_OBJECT_HURT);  // Play hurt animation
@@ -94,6 +98,10 @@ public class EnemyScript : MonoBehaviour
 
         if (health <= 0) // if health is less than or equal to 0
         {
+            for (int i = 0; i < coins.Length; i++)
+            {
+                Instantiate(coins[i], transform.position, transform.rotation);
+            }
             Destroy(gameObject); // Kill enemy
         }
 

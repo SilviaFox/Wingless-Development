@@ -1,16 +1,15 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class DeathScript : MonoBehaviour
 {
     [SerializeField] GameObject deathScreen; // The part of the death screen ui
     [SerializeField] float restartWaitTime;
 
-    Scene loadedLevel;
+    GameManager gameManager;
 
-    private void Awake()
+    private void Start()
     {
-        loadedLevel = SceneManager.GetActiveScene(); // Loaded level = the current level
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
     }
 
     public void Death()
@@ -21,6 +20,6 @@ public class DeathScript : MonoBehaviour
 
     void RestartScene()
     {
-        SceneManager.LoadScene(loadedLevel.buildIndex); // Load the current scene
+        gameManager.Restart();
     }
 }

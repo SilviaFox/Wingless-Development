@@ -24,4 +24,8 @@ public class MainMenuScript : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(mainFirstSelected);
     }
 
+    public void Exit() {
+        Application.Quit();
+    }
+
 }

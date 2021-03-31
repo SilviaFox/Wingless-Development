@@ -16,7 +16,7 @@ public class HealthSlider : MonoBehaviour
 
     private void Update()
     {
-        health = healthScript.health;
+        health = healthScript.visualHealth;
 
         healthSlider.value = health;
     }

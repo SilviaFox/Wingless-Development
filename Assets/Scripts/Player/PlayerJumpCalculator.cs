@@ -21,8 +21,6 @@ public class PlayerJumpCalculator : MonoBehaviour
     Rigidbody2D rb2d;
     PlayerController playerController; // player controller
     InputManager inputManager;
-    RaycastHit2D rightWallDetection;
-    RaycastHit2D leftWallDetection;
     
 
     // Awake is called before starting
@@ -36,24 +34,18 @@ public class PlayerJumpCalculator : MonoBehaviour
     private void Update()
     {
         // Raycasts to check for walls
-        rightWallDetection = Physics2D.Raycast(transform.position + new Vector3(0.0f, wallJumpCheckOffset), Vector2.right, wallCheckDistance, mask); // Detects walls to the right of the player
-        leftWallDetection = Physics2D.Raycast(transform.position + new Vector3(0.0f, wallJumpCheckOffset), Vector2.left, wallCheckDistance, mask); // Detects walls to the right of the player
-
-        if (rightWallDetection || leftWallDetection)
-            playerController.foundWall = true;
+        if (playerController.isFacingLeft)
+            playerController.foundWall = Physics2D.Raycast(transform.position + new Vector3(0.0f, wallJumpCheckOffset), Vector2.left, wallCheckDistance, mask); // Detects walls to the right of the player
         else
-            playerController.foundWall = false;
+            playerController.foundWall = Physics2D.Raycast(transform.position + new Vector3(0.0f, wallJumpCheckOffset), Vector2.right, wallCheckDistance, mask); // Detects walls to the right of the player
+        
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         // If a wall has been found and player is moving in the direction of it while in the air
-        if (leftWallDetection && inputManager.inputX < 0 && !playerController.isGrounded)
-        {
-            ApplyWallJumpPhysics();
-        }
-        else if (rightWallDetection && inputManager.inputX > 0 && !playerController.isGrounded)
+        if (playerController.foundWall && inputManager.inputX != 0 && !playerController.isGrounded)
         {
             ApplyWallJumpPhysics();
         }
