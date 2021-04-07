@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour
@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
     #region Variables
     // Define components
     Rigidbody2D rb2d;
+    Animator animator;
     SpriteRenderer playerSprite;
     SpriteAnimator spriteAnimator;
     BoxCollider2D playerCollider;
@@ -110,6 +111,10 @@ public class PlayerController : MonoBehaviour
 
     // Shooting Variants
     const string PLAYER_IDLE_SHOOT = "Player_Idle_Shoot";
+    const string PLAYER_RUN_SHOOT = "Player_Run_Shoot";
+
+    // Current time of the run clip
+    float runTime;
 
 
     #endregion
@@ -122,6 +127,7 @@ public class PlayerController : MonoBehaviour
 
         // Physics
         rb2d = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         playerCollider = GetComponent<BoxCollider2D>();
 
         // Visuals
@@ -270,22 +276,55 @@ public class PlayerController : MonoBehaviour
         }
         else
             movement.x = 0;
-        
+
+        //
+        // ANIMATIONS
+        //
         if (AbleToUseAirAnimations()) {
             // animations for when in the air
+            
             if (rb2d.velocity.y > 0)
-                spriteAnimator.ChangeAnimationState(PLAYER_JUMP);
+                spriteAnimator.ChangeAnimationState(PLAYER_JUMP, 0);
             else if (rb2d.velocity.y < 0)
-                spriteAnimator.ChangeAnimationState(PLAYER_FALL);
+                spriteAnimator.ChangeAnimationState(PLAYER_FALL, 0);
         }
         else if (!isAttacking) {
-            // Animations for when grounded
-            if (movement.x != 0 && !foundWall)
-                        spriteAnimator.ChangeAnimationState(PLAYER_RUN); // Play run animation
-            else if (!isShooting)
-                        spriteAnimator.ChangeAnimationState(PLAYER_IDLE); // Play idle animation
-            else
-                spriteAnimator.ChangeAnimationState(PLAYER_IDLE_SHOOT); // Play idle shoot animation
+
+            
+            // If player is not shooting
+            if (!isShooting)
+            {
+                
+                if (movement.x != 0) // If player is moving
+                {
+                    // Get the time of the animation and use it for the running & shooting animation
+                    AnimatorStateInfo runState = animator.GetCurrentAnimatorStateInfo(0);
+                    runTime = runState.normalizedTime % 1;
+                    Debug.Log(runTime);
+
+                    spriteAnimator.ChangeAnimationState(PLAYER_RUN, runTime);
+                }
+                else
+                {
+                    spriteAnimator.ChangeAnimationState(PLAYER_IDLE, 0);
+                    runTime = 0;
+                }
+                    
+            }
+            else // If player is shooting
+                if (movement.x != 0)
+                {
+                    // Get the time of the animation and use it for the run animation when we switch back to that
+                    AnimatorStateInfo runState = animator.GetCurrentAnimatorStateInfo(0);
+                    runTime = runState.normalizedTime % 1;
+
+                    spriteAnimator.ChangeAnimationState(PLAYER_RUN_SHOOT, runTime);
+                }
+                else
+                {
+                    spriteAnimator.ChangeAnimationState(PLAYER_IDLE_SHOOT, 0);
+                    runTime = 0;
+                }
         }   
 
         switch(movement.x)
@@ -438,7 +477,7 @@ public class PlayerController : MonoBehaviour
 
         rb2d.sharedMaterial = movingMaterial;
         
-        spriteAnimator.ChangeAnimationState(PLAYER_HURT);
+        spriteAnimator.ChangeAnimationState(PLAYER_HURT, 0);
         playerAudioManager.Play("Hurt");
 
         if (playerSprite.flipX) // detect the direction the player is facing and change the hurt direction accordingly
@@ -453,7 +492,7 @@ public class PlayerController : MonoBehaviour
 
     public void Attack(string attackAnimation, float currentAttackDamage, float attackTime, Vector2 currentAttackForce, bool isAttackGrounded)
     {
-        spriteAnimator.ChangeAnimationState(attackAnimation);
+        spriteAnimator.ChangeAnimationState(attackAnimation, 0);
 
         groundedAttack = isAttackGrounded;
         attackForce = currentAttackForce; // Get force

@@ -58,18 +58,14 @@ public class Shooting : MonoBehaviour
 
         if (ableToShoot)
         {
-            
-            
             playerController.isShooting = true; // Play Shooting animation
 
             if (bulletCounter.bulletAmount < maxBullets) // If the maxiumum amount of bullets has not been reached
             {
-                Debug.Log("poop");
                 Shoot(0);
             }
 
-            nextChargeTime = Time.time + chargeLevelTimes[0];
-            
+            nextChargeTime = Time.time + chargeLevelTimes[0];   
         }
     }
 
@@ -77,6 +73,7 @@ public class Shooting : MonoBehaviour
 
         if (ableToShoot)
         {
+            playerController.isShooting = true;
             chargeParticles.SetActive(true); // Activate the charging particles
             chargeParticleSystemMain.startColor = chargeParticleColors[currentChargeLevel]; // Change color of particles
 

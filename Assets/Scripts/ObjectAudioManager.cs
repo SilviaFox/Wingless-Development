@@ -29,13 +29,12 @@ public class ObjectAudioManager : MonoBehaviour
         Sound s = Array.Find(sounds, sound => sound.name == name); // find the sound in the array
         if (s == null) // stops errors from occuring from typos
         {
-            Debug.LogWarning("Sound: " + name + "not found!");
+            Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
         if (s.randomPitch == true) // If sound has a random pitch
             s.source.pitch = UnityEngine.Random.Range(s.minPitch, s.maxPitch); // set a random pitch
 
-        Debug.Log(s.source.pitch);
         s.source.Play(); // Play it!
     }
 

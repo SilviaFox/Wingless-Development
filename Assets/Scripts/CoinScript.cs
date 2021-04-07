@@ -56,7 +56,7 @@ public class CoinScript : MonoBehaviour
         if (moving)
         {
                 
-            Vector3 newPos = Vector3.MoveTowards(transform.position, playerTransform.position, speed * Time.deltaTime);
+            Vector3 newPos = Vector3.MoveTowards(transform.position, playerTransform.position, speed * Time.fixedDeltaTime);
             rb2d.MovePosition(newPos);
         }
     }

@@ -13,14 +13,14 @@ public class SpriteAnimator : MonoBehaviour
 
 
 
-    public void ChangeAnimationState(string newState)
+    public void ChangeAnimationState(string newState, float animTime)
     {
 
         //stop the same animation from interrupting itself
         if (currentState == newState) return;
         
         // Play the animation
-        animator.Play(newState);
+        animator.Play(newState, 0, animTime);
 
         // Reassign the current state
         currentState = newState;

@@ -21,12 +21,12 @@ public class SlideButtonAnimation : MonoBehaviour
         currentClip = animator.GetCurrentAnimatorClipInfo(0); // Get info about the current clip
 
         if(EventSystem.current.currentSelectedGameObject == this.gameObject) // if this object is currently selected
-            spriteAnimator.ChangeAnimationState(selectAnimation);
+            spriteAnimator.ChangeAnimationState(selectAnimation, 0);
         else if (currentClip[0].clip.name != defaultState) // If the current clip is not the default state
-            spriteAnimator.ChangeAnimationState(deselectAnimation);
+            spriteAnimator.ChangeAnimationState(deselectAnimation, 0);
         else
         {
-            spriteAnimator.ChangeAnimationState(defaultState);
+            spriteAnimator.ChangeAnimationState(defaultState, 0);
         }
 
     }

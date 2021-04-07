@@ -72,7 +72,7 @@ public class EnemyScript : MonoBehaviour
             }
             
             TakeDamage(other.GetComponent<MoveBullet>().damage);
-            spriteAnimator.ChangeAnimationState(TEST_OBJECT_HURT);  // Play hurt animation
+            spriteAnimator.ChangeAnimationState(TEST_OBJECT_HURT, 0);  // Play hurt animation
         }
         else if (other.CompareTag("PlayerMelee"))
         {
@@ -93,7 +93,7 @@ public class EnemyScript : MonoBehaviour
                 // Call Air Rebound Function
             }
 
-            spriteAnimator.ChangeAnimationState(TEST_OBJECT_HURT); // Play hurt animation
+            spriteAnimator.ChangeAnimationState(TEST_OBJECT_HURT, 0); // Play hurt animation
         }
 
         if (health <= 0) // if health is less than or equal to 0
@@ -116,7 +116,7 @@ public class EnemyScript : MonoBehaviour
 
     void ReturnToIdleAnimation() // Resets back to idle animation
     {
-        spriteAnimator.ChangeAnimationState(TEST_OBJECT_IDLE);
+        spriteAnimator.ChangeAnimationState(TEST_OBJECT_IDLE, 0);
     }
 
 }

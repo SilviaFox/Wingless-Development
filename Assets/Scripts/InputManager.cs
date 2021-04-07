@@ -109,7 +109,8 @@ public class InputManager : MonoBehaviour
                 controls.Pause.Unpause.started += ctx => EscUnpause();
 
                 // Dialogue
-                controls.Dialogue.Next.started += ctx => dialogueManager.DisplayNextSentence();
+                controls.Dialogue.Next.started += ctx => dialogueManager.OnButtonPressed();
+                controls.Dialogue.Next.canceled += ctx => dialogueManager.OnButtonReleased();
 
             #endregion
         
