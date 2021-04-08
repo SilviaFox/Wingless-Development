@@ -26,7 +26,7 @@ public class BreakableObject : MonoBehaviour
         if (other.CompareTag("Bullet") || other.CompareTag("EnemyBullet")) // Check to see if the object is a bullet
         {
             health -= 10; // if it is a bullet, remove health [FIX: ADD BULLET SPECIFIC DAMAGE]
-            spriteAnimator.ChangeAnimationState(TEST_OBJECT_HURT, 0);  // Play hurt animation
+            spriteAnimator.ChangeAnimationState(TEST_OBJECT_HURT);  // Play hurt animation
         }
         else if (other.CompareTag("PlayerMelee"))
         {
@@ -46,7 +46,7 @@ public class BreakableObject : MonoBehaviour
                 // Call Air Rebound Function
             }
 
-            spriteAnimator.ChangeAnimationState(TEST_OBJECT_HURT, 0);  // Play hurt animation
+            spriteAnimator.ChangeAnimationState(TEST_OBJECT_HURT);  // Play hurt animation
         }
 
         if (health <= 0) // if health is less than or equal to 0
@@ -59,7 +59,7 @@ public class BreakableObject : MonoBehaviour
 
     void ReturnToIdleAnimation() // Resets back to idle animation
     {
-        spriteAnimator.ChangeAnimationState(TEST_OBJECT_IDLE, 0);
+        spriteAnimator.ChangeAnimationState(TEST_OBJECT_IDLE);
     }
 
 }

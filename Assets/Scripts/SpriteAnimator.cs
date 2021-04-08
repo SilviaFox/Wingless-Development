@@ -13,7 +13,7 @@ public class SpriteAnimator : MonoBehaviour
 
 
 
-    public void ChangeAnimationState(string newState, float animTime)
+    public void ChangeAnimationState(string newState, float animTime = 0)
     {
 
         //stop the same animation from interrupting itself

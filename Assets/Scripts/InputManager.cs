@@ -42,7 +42,6 @@ public class InputManager : MonoBehaviour
             controls.Pause.Enable();
             gameManager.Pause();
         }
-        
 
         public void Unpause() { // Unpause the game, enable player controls, disable pause controls
             controls.Pause.Disable();
@@ -50,9 +49,12 @@ public class InputManager : MonoBehaviour
         }
 
         public void EscUnpause() { // Unpause using the escape key
-            controls.Pause.Disable();
-            controls.Player.Enable();
-            gameManager.Unpause();
+            if (!dialogueManager.inDialogue)
+            {
+                controls.Pause.Disable();
+                controls.Player.Enable();
+                gameManager.Unpause();
+            }
         }
 
         private void Dialogue() { // Dialogue input
@@ -63,6 +65,16 @@ public class InputManager : MonoBehaviour
         public void EndOfDialogue() { // When dialogue has ended
             controls.Dialogue.Disable();
             controls.Player.Enable();
+        }
+
+        public void EnableDialogueButtonSelection() {
+            controls.Dialogue.Disable();
+            controls.Pause.Enable();
+        }
+
+        public void DisableDialogueButtonSelection() {
+            controls.Dialogue.Enable();
+            controls.Pause.Disable();
         }
 
 

@@ -17,7 +17,7 @@ public class NPCScript : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            spriteAnimator.ChangeAnimationState("NPC_ResistanceSoldierTalkRadius", 0);
+            spriteAnimator.ChangeAnimationState("NPC_ResistanceSoldierTalkRadius");
             dialogueTrigger.allowEnable = true;
             inputManager.dialogueTrigger = dialogueTrigger;
         }
@@ -27,7 +27,7 @@ public class NPCScript : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            spriteAnimator.ChangeAnimationState("NPC_ResistanceSoldierIdle", 0);
+            spriteAnimator.ChangeAnimationState("NPC_ResistanceSoldierIdle");
             dialogueTrigger.allowEnable = false;
             inputManager.dialogueTrigger = null;
         }
