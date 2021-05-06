@@ -8,7 +8,6 @@ TagManager:
   - BulletManager
   - Bullet
   - PlayerAudio
-  - EnemyBullet
   - PlayerHealth
   - GameManager
   - PlayerMelee
@@ -16,6 +15,9 @@ TagManager:
   - PauseMenu
   - Score
   - Coin
+  - HurtPlayer
+  - UI
+  - DamageNumbers
   layers:
   - Default
   - TransparentFX
@@ -31,8 +33,8 @@ TagManager:
   - Player
   - PlayerAttack
   - Coin
-  - 
-  - 
+  - EnemyAttack
+  - PlayerHitbox
   - 
   - 
   - 

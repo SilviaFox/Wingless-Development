@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 3392069202430835829}
   - component: {fileID: 6001529122368616272}
   - component: {fileID: 4625964195046897802}
+  - component: {fileID: 6973238272446336272}
   m_Layer: 0
   m_Name: Enemy_Bullet
-  m_TagString: EnemyBullet
+  m_TagString: HurtPlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -49,6 +50,7 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -138,3 +140,17 @@ MonoBehaviour:
   bulletDespawnTime: 0.5
   bulletDespawnRate: 0.1
   damage: 0
+--- !u!114 &6973238272446336272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4339538917433149918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4456e084ba79dd24eade9c03cf49502c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destroyOnHit: 1
+  damage: 5

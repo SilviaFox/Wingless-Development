@@ -19,6 +19,8 @@ public class MoveBullet : MonoBehaviour
     [SerializeField] float bulletDespawnTime = 0.5f; // time it takes for bullets to despawn
     [SerializeField] float bulletDespawnRate = 0.1f; // speed at which bullets will despawn
     public bool canGoThroughEnemies = false;
+    int enemiesDefeated = 0;
+    [SerializeField] int maxEnemies = 4; // Maximum enemies this bullet can go through
 
     void Awake() // Triggered when object is created
     {
@@ -60,6 +62,15 @@ public class MoveBullet : MonoBehaviour
     }
 
     #endregion
+
+    public void GoThroughEnemy() // Triggered when bullets pass through an enemy
+    {
+        enemiesDefeated ++;
+        if (enemiesDefeated == maxEnemies)
+        {
+            Destroy(this.gameObject);
+        }
+    }
 
     // Update is called once per frame
     void FixedUpdate()

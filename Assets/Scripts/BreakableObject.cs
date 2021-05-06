@@ -23,7 +23,7 @@ public class BreakableObject : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other) // When touching a trigger object
     {
-        if (other.CompareTag("Bullet") || other.CompareTag("EnemyBullet")) // Check to see if the object is a bullet
+        if (other.CompareTag("Bullet")) // Check to see if the object is a bullet
         {
             health -= 10; // if it is a bullet, remove health [FIX: ADD BULLET SPECIFIC DAMAGE]
             spriteAnimator.ChangeAnimationState(TEST_OBJECT_HURT);  // Play hurt animation

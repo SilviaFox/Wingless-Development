@@ -133,7 +133,7 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
@@ -297,7 +297,7 @@ MonoBehaviour:
   m_FalloffIntensity: 1
   m_Color: {r: 0.3019608, g: 0.60784316, b: 0.90196085, a: 1}
   m_Intensity: 1
-  m_LightVolumeOpacity: 0.32
+  m_LightVolumeOpacity: 0.1
   m_ApplyToSortingLayers: 00000000
   m_LightCookieSprite: {fileID: 0}
   m_UseNormalMap: 0
