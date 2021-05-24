@@ -1,2 +1,2 @@
 # Wingless-Development
-Repository for my game "Wingless", a 2D movement-based platformer.
+Repository for my game "Project Wingless", a 2D Unity platformer.
