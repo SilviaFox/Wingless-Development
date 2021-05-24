@@ -122,6 +122,7 @@ public class DialogueManager : MonoBehaviour
         inputManager.EndOfDialogue();
         dialogueBox.GetComponent<Animator>().Play("Dialogue_End");
         inDialogue = false;
+        EventSystem.current.SetSelectedGameObject(null);
     }
 
     IEnumerator TypeSentence (string name, string sentence, Sprite left, Sprite right, bool enableButtons, int buttons) {

@@ -5,6 +5,7 @@ using UnityEngine.Events;
 public class EnemyLogic : MonoBehaviour
 {
     public float health;
+    [SerializeField] bool invincible;
 
     [SerializeField] GameObject[] coins;
     [SerializeField] bool affectedByForce;
@@ -38,7 +39,10 @@ public class EnemyLogic : MonoBehaviour
         if (other.CompareTag("Bullet")) // Check to see if the object is a bullet
         {
             if (!other.GetComponent<MoveBullet>().canGoThroughEnemies) // if bullet cannot go through enemies
-                Destroy(other.gameObject); // Destroy Bullet
+                {
+                    Destroy(other.gameObject); // Destroy Bullet
+                    bulletCounter.DecreaseBulletAmount(); // Decrease bullet counter
+                }
             else
                 other.GetComponent<MoveBullet>().GoThroughEnemy();
             
@@ -64,7 +68,7 @@ public class EnemyLogic : MonoBehaviour
             }
         }
 
-        if (health <= 0) // if health is less than or equal to 0
+        if (health <= 0 && !invincible) // if health is less than or equal to 0
         {
             for (int i = 0; i < coins.Length; i++)
             {
@@ -79,10 +83,10 @@ public class EnemyLogic : MonoBehaviour
         health = newHealth;
     }
 
-    private void OnDestroy()
-    {
-        bulletCounter.DecreaseBulletAmount(); // Decrease bullet counter
-    }
+    // private void OnDestroy()
+    // {
+    //     bulletCounter.DecreaseBulletAmount(); // Decrease bullet counter
+    // }
 
     void TakeDamage(float damage)
     {

@@ -30,7 +30,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.09090909
+        time: 0.125
         value: 1
         inSlope: Infinity
         outSlope: Infinity
@@ -39,7 +39,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.18181819
+        time: 0.25
         value: 0
         inSlope: Infinity
         outSlope: Infinity
@@ -59,26 +59,26 @@ AnimationClip:
     - time: 0
       value: {fileID: 2619410322053490169, guid: cf2041ca304dcdb4596cb3d45cbdbb4b,
         type: 3}
-    - time: 0.045454547
+    - time: 0.0625
       value: {fileID: 110474040980779081, guid: cf2041ca304dcdb4596cb3d45cbdbb4b,
         type: 3}
-    - time: 0.09090909
+    - time: 0.125
       value: {fileID: -6076628532671288310, guid: cf2041ca304dcdb4596cb3d45cbdbb4b,
         type: 3}
-    - time: 0.13636364
+    - time: 0.1875
       value: {fileID: 8076165856959912468, guid: cf2041ca304dcdb4596cb3d45cbdbb4b,
         type: 3}
-    - time: 0.18181819
+    - time: 0.25
       value: {fileID: 6893510720058789904, guid: cf2041ca304dcdb4596cb3d45cbdbb4b,
         type: 3}
-    - time: 0.22727273
+    - time: 0.3125
       value: {fileID: 3342647397551858667, guid: cf2041ca304dcdb4596cb3d45cbdbb4b,
         type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
     script: {fileID: 0}
-  m_SampleRate: 22
+  m_SampleRate: 16
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
@@ -111,7 +111,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.27272728
+    m_StopTime: 0.375
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -140,7 +140,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.09090909
+        time: 0.125
         value: 1
         inSlope: Infinity
         outSlope: Infinity
@@ -149,7 +149,7 @@ AnimationClip:
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 0.18181819
+        time: 0.25
         value: 0
         inSlope: Infinity
         outSlope: Infinity
