@@ -15,13 +15,13 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         shootingScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Shooting>();
-        inputManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<InputManager>();
+        inputManager = FindObjectOfType<InputManager>();
         Unpause();
     }
 
     public void Restart() {
             inputManager.DisableAll(); // Disable all current inputs so that they don't cause errors on load
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     
 

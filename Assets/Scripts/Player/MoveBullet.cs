@@ -25,7 +25,7 @@ public class MoveBullet : MonoBehaviour
     void Awake() // Triggered when object is created
     {
 
-        bulletCounter = GameObject.FindGameObjectWithTag("BulletManager").GetComponent<BulletCounter>();
+        bulletCounter = FindObjectOfType<BulletCounter>();
         bulletRenderer = GetComponent<SpriteRenderer>();
 
         // Position
@@ -36,8 +36,8 @@ public class MoveBullet : MonoBehaviour
         // Movement
 
         rb2d = GetComponent<Rigidbody2D>(); // Rigidbody for moving the object
-        playerLeft = GameObject.FindGameObjectWithTag("Player").GetComponent<SpriteRenderer>().flipX; // Get direction the player is facing
-        isOnWall = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().isOnWall;
+        playerLeft = PlayerController.playerSprite.flipX; // Get direction the player is facing
+        isOnWall = PlayerController.current.isOnWall;
 
         if (playerLeft)
             direction = -1; // bullet direction will be multiplied by -1 

@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
+    public static InputManager instance;
+
     GameManager gameManager;
     public InputMaster controls;
 
@@ -31,11 +33,6 @@ public class InputManager : MonoBehaviour
             controls.Disable();
         }
 
-        private void OnEnable() { // On enable, reset the Player Controls
-            controls.Player.Disable();
-            controls.Player.Enable();
-        }
-
         private void Pause() { // Pause the game, disable player controls, enable pause controls
             Debug.Log("Game is Paused");
             controls.Player.Disable();
@@ -51,8 +48,6 @@ public class InputManager : MonoBehaviour
         public void EscUnpause() { // Unpause using the escape key
             if (!dialogueManager.inDialogue)
             {
-                controls.Pause.Disable();
-                controls.Player.Enable();
                 gameManager.Unpause();
             }
         }
@@ -83,20 +78,28 @@ public class InputManager : MonoBehaviour
 
     private void Awake()
     {
+
+        instance = this;
+        controls = new InputMaster();
         // Get components
         gameManager = GetComponent<GameManager>();
         
+    }
+
+    private void Start()
+    {
+
         // Player Components
-        player = GameObject.FindGameObjectWithTag("Player");
-        shootingScript = player.GetComponent<Shooting>();
-        playerController = player.GetComponent<PlayerController>();
-        meleeSystem = player.GetComponent<MeleeSystem>();
+        playerController = PlayerController.current;
+        shootingScript = PlayerController.shootingScript;
+        meleeSystem = PlayerController.meleeSystem;
 
         // Dialogue manager
         dialogueManager = GetComponent<DialogueManager>();
         
-        controls = new InputMaster();
                 
+        controls.Player.Disable();
+        controls.Player.Enable();
 
             #region Gameplay Input
                 // Jumping
@@ -125,8 +128,6 @@ public class InputManager : MonoBehaviour
                 controls.Dialogue.Next.canceled += ctx => dialogueManager.OnButtonReleased();
 
             #endregion
-        
-
         
     }
     // Update is called once per frame

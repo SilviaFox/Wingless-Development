@@ -9,7 +9,7 @@ public class ObjectAudioManager : MonoBehaviour
     public Sound[] sounds; // Call the Sound class created in Sound.cs
 
     // Calls before start
-    void Awake()
+    void Start()
     {   
 
         foreach (Sound s in sounds) // For every sound created with the Sound class

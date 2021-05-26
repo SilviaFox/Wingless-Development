@@ -13,14 +13,14 @@ public class PlayerHealth : MonoBehaviour
 
     DeathScript deathScript; // When health is 0, trigger this script
 
-    private void Awake()
+    private void Start()
     {
         // Set to max health
         health = maxHealth;
         visualHealth = health;
 
-        audioManager = GameObject.FindGameObjectWithTag("PlayerAudio").GetComponent<ObjectAudioManager>();
-        deathScript = GameObject.FindGameObjectWithTag("GameManager").GetComponent<DeathScript>(); // Script for when the player dies
+        audioManager = PlayerController.playerAudioManager;
+        deathScript = GameObject.FindObjectOfType<DeathScript>(); // Script for when the player dies
     }
 
     public IEnumerator AddHealth(float healingAmount)

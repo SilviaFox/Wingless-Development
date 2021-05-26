@@ -6,7 +6,7 @@ public class WorldBulletCollisions : MonoBehaviour
 
     private void Awake()
     {
-        bulletCounter = GameObject.FindGameObjectWithTag("BulletManager").GetComponent<BulletCounter>();    
+        bulletCounter = GameObject.FindObjectOfType<BulletCounter>();    
     }
 
     private void OnTriggerEnter2D(Collider2D other)

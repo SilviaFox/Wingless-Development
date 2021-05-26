@@ -16,9 +16,9 @@ public class DetectPlayer : MonoBehaviour
     [HideInInspector] Vector2 playerPosition;
 
 
-    private void Awake()
+    private void Start()
     {
-        playerTransform = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        playerTransform = PlayerController.current.gameObject.transform;
     }
 
     void Update()

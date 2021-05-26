@@ -25,13 +25,14 @@ public class Shooting : MonoBehaviour
     ParticleSystem.MainModule chargeParticleSystemMain;
 
     BulletCounter bulletCounter;
-    ObjectAudioManager playerAudioManager; // Audio Manager for playing local player sounds
     PlayerController playerController; // For checking if the player is dead or alive
     InputManager inputManager;
 
-    private void Awake()
+    private void OnEnable()
     {
-        inputManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<InputManager>();
+        // Get main particle system
+        ParticleSystem chargeParticleSystem = chargeParticles.GetComponent<ParticleSystem>();
+        chargeParticleSystemMain = chargeParticleSystem.main;
     }
 
     private void Start()
@@ -39,13 +40,13 @@ public class Shooting : MonoBehaviour
 
         // Get components
         playerController = GetComponent<PlayerController>();
+        inputManager = InputManager.instance;
 
         bulletCounter = GameObject.FindGameObjectWithTag("BulletManager").GetComponent<BulletCounter>();
-        playerAudioManager = GameObject.FindGameObjectWithTag("PlayerAudio").GetComponent<ObjectAudioManager>();
 
         // Get main particle system
-        ParticleSystem chargeParticleSystem = chargeParticles.GetComponent<ParticleSystem>();
-        chargeParticleSystemMain = chargeParticleSystem.main;
+        // ParticleSystem chargeParticleSystem = chargeParticles.GetComponent<ParticleSystem>();
+        // chargeParticleSystemMain = chargeParticleSystem.main;
 
         bulletCounter.IncreaseBulletAmount(); // Add 1 to the current amount of bullets
 
@@ -53,8 +54,6 @@ public class Shooting : MonoBehaviour
     }
 
     public void InitialShot() {
-        
-        
 
         if (ableToShoot)
         {
@@ -64,6 +63,9 @@ public class Shooting : MonoBehaviour
             {
                 Shoot(0);
             }
+
+            if (currentChargeLevel == 0)
+                    PlayerController.playerAudioManager.Play("Charge");
 
             nextChargeTime = Time.time + chargeLevelTimes[0];   
         }
@@ -79,6 +81,7 @@ public class Shooting : MonoBehaviour
 
             if (Time.time >= nextChargeTime && currentChargeLevel != 2)
             {
+                
                 playerController.isShooting = true; // Play Shooting animation
                 nextChargeTime = Time.time + chargeLevelTimes[currentChargeLevel];
                 currentChargeLevel ++;
@@ -91,7 +94,9 @@ public class Shooting : MonoBehaviour
     }
 
     public void ReleaseShot() {
+        
         // Release a charged shot
+        PlayerController.playerAudioManager.Stop("Charge");
 
         chargeParticles.SetActive(false);
 
@@ -152,7 +157,9 @@ public class Shooting : MonoBehaviour
         }
         
         nextChargeTime = Time.time + chargeLevelTimes[currentChargeLevel];
-        playerAudioManager.Play(shootSounds[currentChargeLevel]);
+        
+        PlayerController.playerAudioManager.Play(shootSounds[currentChargeLevel]);
+        // PlayerController.playerAudioManager.Stop("Charge");
         nextFireTime = Time.time + timeBetweenFire;
         if (!playerController.foundWall)
         {
@@ -164,19 +171,19 @@ public class Shooting : MonoBehaviour
 
     public void OnUnpause()
     {
-        if(!inputManager.shootHeld && currentChargeLevel > 0)
-        {   
-            if (bulletCounter.bulletAmount < maxBullets) // If the maxiumum amount of bullets has not been reached
-                Shoot(currentChargeLevel);
+        // if(!inputManager.shootHeld && currentChargeLevel > 0)
+        // {   
+        //     if (bulletCounter.bulletAmount < maxBullets) // If the maxiumum amount of bullets has not been reached
+        //         Shoot(currentChargeLevel);
 
-            chargeParticles.SetActive(false);
-        }
-        else if (!inputManager.shootHeld)
-        {
-            currentChargeLevel = 0;
-            if (chargeParticles != null)
-                chargeParticles.SetActive(false);
-        }
+        //     chargeParticles.SetActive(false);
+        // }
+        // else if (!inputManager.shootHeld)
+        // {
+        //     currentChargeLevel = 0;
+        //     if (chargeParticles != null)
+        //         chargeParticles.SetActive(false);
+        // }
     }
 
 

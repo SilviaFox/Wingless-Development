@@ -9,7 +9,7 @@ public class DeathScript : MonoBehaviour
 
     private void Start()
     {
-        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        gameManager = FindObjectOfType<GameManager>();
     }
 
     public void Death()

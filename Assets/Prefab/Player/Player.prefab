@@ -4899,7 +4899,7 @@ MonoBehaviour:
     loop: 0
     source: {fileID: 0}
   - name: Shoot1
-    clip: {fileID: 8300000, guid: 38ecb55363f649b498ab5f72443a73d9, type: 3}
+    clip: {fileID: 8300000, guid: e3aa498a2a13a984d86059da33606bef, type: 3}
     volume: 0.5
     randomPitch: 0
     minPitch: 0
@@ -4907,7 +4907,7 @@ MonoBehaviour:
     loop: 0
     source: {fileID: 0}
   - name: Shoot2
-    clip: {fileID: 8300000, guid: 0205ed92b08f8f546b8923d11b728b10, type: 3}
+    clip: {fileID: 8300000, guid: ec8f39f02832d424aa8187a4c2183b3d, type: 3}
     volume: 0.5
     randomPitch: 0
     minPitch: 0
@@ -4915,7 +4915,7 @@ MonoBehaviour:
     loop: 0
     source: {fileID: 0}
   - name: Shoot3
-    clip: {fileID: 8300000, guid: 18e5abd001031af43812e4e441f67a22, type: 3}
+    clip: {fileID: 8300000, guid: e974df40e731d5c409b01b0b152f504f, type: 3}
     volume: 0.5
     randomPitch: 0
     minPitch: 0
@@ -4960,6 +4960,14 @@ MonoBehaviour:
     randomPitch: 1
     minPitch: 1
     maxPitch: 3
+    loop: 0
+    source: {fileID: 0}
+  - name: Charge
+    clip: {fileID: 8300000, guid: 1731d981ab507044da43f86d0c0f3cd9, type: 3}
+    volume: 3
+    randomPitch: 0
+    minPitch: 1
+    maxPitch: 1
     loop: 0
     source: {fileID: 0}
 --- !u!1 &8855960409292790071
@@ -5190,13 +5198,6 @@ MonoBehaviour:
   defaultGravityScale: 3
   jumpFallMultiplier: 4.5
   jumpReleaseMultiplier: 20
-  wallJumpGravity: 1.75
-  wallCheckDistance: 0.4
-  wallJumpCheckOffset: -0.35
-  wallAttatchForce: 1
-  mask:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!114 &8855960409292790079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5236,7 +5237,7 @@ MonoBehaviour:
   maxBullets: 3
   timeBetweenFire: 0.25
   chargeLevelTimes:
-  - 1
+  - 2
   - 2
   - 2.5
   currentChargeLevel: 0

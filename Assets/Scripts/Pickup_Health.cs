@@ -7,7 +7,7 @@ public class Pickup_Health : MonoBehaviour
 
     private void Start()
     {
-        healthScript = GameObject.FindGameObjectWithTag("PlayerHealth").GetComponent<PlayerHealth>();
+        healthScript = PlayerController.playerHealth;
     }
 
     private void OnTriggerEnter2D(Collider2D other)

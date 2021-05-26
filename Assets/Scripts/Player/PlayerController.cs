@@ -5,15 +5,19 @@ public class PlayerController : MonoBehaviour
 {
     #region Variables
     // Define components
-    Rigidbody2D rb2d;
+    public static Rigidbody2D rb2d;
     Animator animator;
-    SpriteRenderer playerSprite;
     SpriteAnimator spriteAnimator;
     BoxCollider2D playerCollider;
-    ObjectAudioManager playerAudioManager; // Audio Manager for playing local player sounds
     DeathScript deathScript; // When health is 0, trigger this script
-    PlayerHealth playerHealth; // for getting the amount of health the player has
     InputManager inputManager;
+
+    public static SpriteRenderer playerSprite;
+    public static PlayerController current;
+    public static Shooting shootingScript;
+    public static MeleeSystem meleeSystem;
+    public static PlayerHealth playerHealth; // for getting the amount of health the player has
+    public static ObjectAudioManager playerAudioManager; // Audio Manager for playing local player sounds
 
     //=================
     // Define Variables
@@ -120,7 +124,23 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Start/Defining Variables
-    // Start is called before the first frame update
+    
+    private void OnEnable()
+    {
+        current = this;
+        // Visuals
+        playerSprite = GetComponent<SpriteRenderer>();
+        spriteAnimator = GetComponent<SpriteAnimator>();
+        dashGhosts = GetComponent<Ghost>();
+
+        // Attacking
+        shootingScript = GetComponent<Shooting>();
+        meleeSystem = GetComponent<MeleeSystem>();
+
+        // Health
+        playerHealth = FindObjectOfType<PlayerHealth>();
+    }
+
     void Start()
     {
         // Get components
@@ -130,26 +150,17 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         playerCollider = GetComponent<BoxCollider2D>();
 
-        // Visuals
-        playerSprite = GetComponent<SpriteRenderer>();
-        spriteAnimator = GetComponent<SpriteAnimator>();
-        dashGhosts = GetComponent<Ghost>();
-
         // Ground Detection
         playerSize = playerCollider.size;
         colliderOffset = playerCollider.offset;
         boxSize = new Vector2(playerSize.x - subtractFromBoxSize, groundedSkin);
 
         // Audio
-        playerAudioManager = GameObject.FindGameObjectWithTag("PlayerAudio").GetComponent<ObjectAudioManager>();
+        playerAudioManager = FindObjectOfType<ObjectAudioManager>();
 
-        // Gameplay
 
         // Input
-        inputManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<InputManager>();
-        
-        // Health
-        playerHealth = GameObject.FindGameObjectWithTag("PlayerHealth").GetComponent<PlayerHealth>();
+        inputManager = InputManager.instance;
 
         // Attacks
         attackColliderOffset = attackCollider.offset;

@@ -15,8 +15,8 @@ public class MeleeSystem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerController = GetComponent<PlayerController>();
-        inputManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<InputManager>();
+        playerController = PlayerController.current;
+        inputManager = FindObjectOfType<InputManager>();
     }
 
     private void Update()

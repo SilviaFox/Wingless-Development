@@ -10,10 +10,10 @@ public class PlayerTakeDamage : MonoBehaviour
     PlayerController playerController;
     float damage;
 
-    private void Awake()
+    private void Start()
     {
-        playerController = transform.parent.gameObject.GetComponent<PlayerController>(); // get the player controller
-        playerSprite = transform.parent.gameObject.GetComponent<SpriteRenderer>();
+        playerController = PlayerController.current; // get the player controller
+        playerSprite = PlayerController.playerSprite;
         hurtBox = GetComponent<BoxCollider2D>();
     }
 

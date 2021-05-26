@@ -38,7 +38,7 @@ public class DialogueManager : MonoBehaviour
         enabledButtons = new Queue<bool>();
         amountOfButtons = new Queue<int>();
 
-        inputManager = GetComponent<InputManager>();
+        inputManager = InputManager.instance;
         currentCharTime = timeForNextChar;
     }
 

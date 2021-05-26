@@ -24,10 +24,10 @@ public class EnemyLogic : MonoBehaviour
 
     private void Start()
     {
-        playerAudioManager = GameObject.FindGameObjectWithTag("PlayerAudio").GetComponent<ObjectAudioManager>();
-        playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-        damageNumbers = GameObject.FindGameObjectWithTag("DamageNumbers").GetComponent<DamageNumbers>();
-        bulletCounter = GameObject.FindGameObjectWithTag("BulletManager").GetComponent<BulletCounter>();
+        playerController = PlayerController.current;
+        playerAudioManager = PlayerController.playerAudioManager;
+        damageNumbers = FindObjectOfType<DamageNumbers>();
+        bulletCounter = FindObjectOfType<BulletCounter>();
 
         if (affectedByForce)
             forceScript = gameObject.AddComponent<EnemyGetAffectedByForce>() as EnemyGetAffectedByForce;
